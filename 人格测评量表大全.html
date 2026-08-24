@@ -1,0 +1,550 @@
+<title>人格测评量表大全</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap">
+<style>
+:root {
+  --bg: #FAFAFC;
+  --surface: #EDEDF2;
+  --surface-hover: #E3E4EB;
+  --text-1: #1A1D28;
+  --text-2: #5A5E6B;
+  --text-3: #828590;
+  --accent: #7B2D4E;
+  --accent-soft: #F0E2E9;
+  --accent-text: #7B2D4E;
+  --sec: #1E6B5A;
+  --sec-soft: #DFF0EC;
+  --sec-text: #1E6B5A;
+  --border: #D5D6DE;
+  --sidebar-bg: #F0F0F6;
+  --sidebar-active: #E8E0E9;
+  --tag-bg: #E8E9F0;
+  --tag-text: #4A4D58;
+  --standing-5: #7B2D4E;
+  --standing-4: #1E6B5A;
+  --standing-3: #4A6FA0;
+  --standing-2: #7A7D88;
+  --standing-1: #A0A3AE;
+  --dot-empty: #D0D1D8;
+  --theory-bg: #F5F0F2;
+  --theory-border: #D8C8CF;
+  --search-bg: #fff;
+  --section-line: #7B2D4E;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111318;--surface:#1A1D26;--surface-hover:#22252F;--text-1:#E0E1E8;--text-2:#8E909C;--text-3:#5E6070;--accent:#C2698A;--accent-soft:#2A1C23;--accent-text:#D88AA6;--sec:#4EAA93;--sec-soft:#162A25;--sec-text:#5EBFA8;--border:#282B36;--sidebar-bg:#14161E;--sidebar-active:#241E28;--tag-bg:#252730;--tag-text:#B0B2BC;--standing-5:#C2698A;--standing-4:#4EAA93;--standing-3:#6E92C8;--standing-2:#7A7D88;--standing-1:#4A4D56;--dot-empty:#303340;--theory-bg:#1E1A20;--theory-border:#3A2E34;--search-bg:#1A1D26;--section-line:#C2698A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111318;--surface:#1A1D26;--surface-hover:#22252F;--text-1:#E0E1E8;--text-2:#8E909C;--text-3:#5E6070;--accent:#C2698A;--accent-soft:#2A1C23;--accent-text:#D88AA6;--sec:#4EAA93;--sec-soft:#162A25;--sec-text:#5EBFA8;--border:#282B36;--sidebar-bg:#14161E;--sidebar-active:#241E28;--tag-bg:#252730;--tag-text:#B0B2BC;--standing-5:#C2698A;--standing-4:#4EAA93;--standing-3:#6E92C8;--standing-2:#7A7D88;--standing-1:#4A4D56;--dot-empty:#303340;--theory-bg:#1E1A20;--theory-border:#3A2E34;--search-bg:#1A1D26;--section-line:#C2698A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text-1);font-family:'Noto Sans SC','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.layout{display:flex;min-height:100vh}
+.sidebar{position:sticky;top:0;width:260px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--border);flex-shrink:0;z-index:10;scrollbar-width:thin}
+.sidebar-header{padding:28px 20px 12px;border-bottom:1px solid var(--border)}
+.sidebar-header h2{font-family:'Playfair Display','Noto Serif SC',serif;font-size:18px;font-weight:600;color:var(--accent-text);letter-spacing:.02em}
+.sidebar-header .count{font-size:12px;color:var(--text-3);margin-top:4px;font-weight:400}
+.toc{padding:8px 0}
+.toc-item{display:flex;align-items:baseline;gap:8px;padding:7px 20px;cursor:pointer;font-size:13px;color:var(--text-2);transition:all .15s;border-left:3px solid transparent;text-decoration:none}
+.toc-item:hover{background:var(--surface);color:var(--text-1)}
+.toc-item.active{color:var(--accent-text);border-left-color:var(--accent);background:var(--sidebar-active);font-weight:500}
+.toc-item .num{font-variant-numeric:tabular-nums;font-size:11px;color:var(--text-3);min-width:20px}
+.main{flex:1;min-width:0;max-width:920px;padding:32px 40px 80px;margin:0 auto}
+.page-header{margin-bottom:36px}
+.page-header h1{font-family:'Playfair Display','Noto Serif SC',serif;font-size:32px;font-weight:700;line-height:1.3;color:var(--text-1);margin-bottom:6px}
+.page-header .subtitle{font-size:14px;color:var(--text-2);line-height:1.6;max-width:640px;margin-bottom:18px}
+.stats-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.stat-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:var(--surface);border-radius:20px;font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.stat-chip b{color:var(--accent-text);font-weight:700}
+.search-wrap{position:relative;max-width:400px}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;border:1px solid var(--border);border-radius:8px;background:var(--search-bg);color:var(--text-1);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap input::placeholder{color:var(--text-3)}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+.section{margin-bottom:32px}
+.section-header{display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;user-select:none;border-bottom:2px solid var(--section-line)}
+.section-header:hover .section-title{color:var(--accent-text)}
+.section-num{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--accent-text);min-width:28px;font-style:italic}
+.section-title{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--text-1);flex:1;transition:color .15s}
+.section-title-en{font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--text-3);font-style:italic;margin-left:8px}
+.section-count{font-size:12px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.section-arrow{font-size:12px;color:var(--text-3);transition:transform .25s}
+.section-arrow.open{transform:rotate(180deg)}
+.theory-note{padding:10px 16px;margin:12px 0;background:var(--theory-bg);border-left:3px solid var(--theory-border);border-radius:0 6px 6px 0;font-size:13px;color:var(--text-2);line-height:1.6}
+.cards{display:flex;flex-direction:column;gap:10px;padding-top:12px}
+.card{background:var(--surface);border-radius:8px;padding:14px 18px;border:1px solid transparent;transition:all .15s}
+.card:hover{background:var(--surface-hover);border-color:var(--border)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.card-name{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text-1);line-height:1.4}
+.card-name-en{font-family:'Playfair Display',serif;font-weight:600;font-style:italic;color:var(--text-3);font-size:12px;display:block;margin-top:1px}
+.standing{display:flex;gap:3px;flex-shrink:0;padding-top:4px}
+.standing .dot{width:7px;height:7px;border-radius:50%}
+.standing .dot.filled{background:var(--accent)}
+.standing .dot.empty{background:var(--dot-empty)}
+.meta-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.meta{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11.5px;font-variant-numeric:tabular-nums}
+.meta.author{background:var(--accent-soft);color:var(--accent-text)}
+.meta.year{background:var(--sec-soft);color:var(--sec-text)}
+.meta.items{background:var(--tag-bg);color:var(--tag-text)}
+.meta.format{background:var(--tag-bg);color:var(--tag-text)}
+.card-desc{font-size:13.5px;color:var(--text-2);line-height:1.65;margin-bottom:6px}
+.card-dims{font-size:12.5px;color:var(--text-1);line-height:1.6;padding:6px 10px;background:var(--bg);border-radius:5px;margin-bottom:6px}
+.card-dims b{color:var(--accent-text);font-weight:600}
+.tags-row{display:flex;flex-wrap:wrap;gap:4px}
+.tag{padding:1px 7px;border-radius:3px;font-size:11px;background:var(--tag-bg);color:var(--tag-text)}
+.section-body{overflow:hidden;transition:max-height .35s ease}
+.section-body.collapsed{max-height:0!important}
+.no-results{text-align:center;padding:40px;color:var(--text-3);font-size:14px}
+.overview{margin-bottom:40px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.overview-header{padding:18px 24px;background:var(--accent-soft);border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+.overview-header h2{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;color:var(--accent-text);flex:1}
+.overview-header .section-arrow{font-size:12px;color:var(--text-3);transition:transform .25s}
+.overview-header .section-arrow.open{transform:rotate(180deg)}
+.overview-body{padding:24px 28px;overflow:hidden;transition:max-height .4s ease}
+.overview-body.collapsed{max-height:0!important;padding:0 28px}
+.ov-section{margin-bottom:24px}
+.ov-section:last-child{margin-bottom:0}
+.ov-section h3{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text-1);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.ov-section p,.ov-section li{font-size:13.5px;line-height:1.75;color:var(--text-2)}
+.ov-section ul{padding-left:18px;margin:6px 0}
+.ov-section li{margin-bottom:4px}
+.ov-section strong{color:var(--text-1);font-weight:600}
+.ov-section em{color:var(--accent-text);font-style:normal;font-weight:500}
+.tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+@media(max-width:600px){.tier-grid{grid-template-columns:1fr}}
+.tier-card{padding:12px 14px;border-radius:6px;border:1px solid var(--border)}
+.tier-card.t1{background:var(--accent-soft);border-color:var(--accent)}
+.tier-card.t2{background:var(--sec-soft);border-color:var(--sec)}
+.tier-card.t3{background:var(--surface)}
+.tier-card.t4{background:var(--bg)}
+.tier-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.tier-card.t1 .tier-label{color:var(--accent-text)}
+.tier-card.t2 .tier-label{color:var(--sec-text)}
+.tier-card.t3 .tier-label,.tier-card.t4 .tier-label{color:var(--text-3)}
+.tier-card p{font-size:12.5px;color:var(--text-2);line-height:1.6;margin:0}
+.trend-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;margin-right:6px;flex-shrink:0;font-family:'Playfair Display',serif}
+.trend-item{display:flex;align-items:flex-start;margin-bottom:10px}
+.trend-item p{margin:0;font-size:13px;line-height:1.65;color:var(--text-2)}
+.trend-item strong{color:var(--text-1)}
+.pop-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12.5px}
+.pop-table th{text-align:left;padding:6px 10px;background:var(--surface);color:var(--text-3);font-weight:600;font-size:11px;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+.pop-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top}
+.pop-table td:first-child{font-weight:600;color:var(--text-1);white-space:nowrap}
+.menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:20;width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-1);font-size:18px;cursor:pointer;align-items:center;justify-content:center}
+@media(max-width:860px){
+  .sidebar{position:fixed;left:-280px;transition:left .25s;box-shadow:none}
+  .sidebar.open{left:0;box-shadow:4px 0 20px rgba(0,0,0,.15)}
+  .menu-toggle{display:flex}
+  .main{padding:24px 16px 60px;margin-top:0}
+  .page-header h1{font-size:24px}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9}
+  .overlay.show{display:block}
+}
+</style>
+
+<button class="menu-toggle" onclick="toggleSidebar()">&#9776;</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>Personality Scales</h2>
+      <div class="count" id="sidebar-count"></div>
+    </div>
+    <nav class="toc" id="toc"></nav>
+  </aside>
+  <main class="main" id="main">
+    <div class="page-header">
+      <h1>人格测评量表大全</h1>
+      <p class="subtitle">按心理学理论流派系统整理的人格与人格相关测评工具全览，涵盖经典主流与近年新兴范式，共计 <b id="total-count"></b> 项工具，供学术研究、临床评估、组织应用与个人探索参考。</p>
+      <div class="stats-row" id="stats"></div>
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search" placeholder="搜索量表名称、作者、关键词...">
+      </div>
+    </div>
+    <div class="overview" id="overview">
+      <div class="overview-header" onclick="toggleOverview()">
+        <h2>领域综述：人格测评全景横评</h2>
+        <span class="section-arrow open" id="arrow-overview">&#9660;</span>
+      </div>
+      <div class="overview-body" id="body-overview">
+
+        <div class="ov-section">
+          <h3>一、当前最流行的人格测评工具</h3>
+          <p>不同场景下的"流行"含义完全不同。以下按四大使用场景梳理：</p>
+          <div style="overflow-x:auto">
+          <table class="pop-table">
+            <tr><th>场景</th><th>第一梯队（主导地位）</th><th>第二梯队（广泛使用）</th><th>备注</th></tr>
+            <tr><td>学术科研</td><td>大五系列（NEO-PI-R/3、BFI-2、IPIP）</td><td>HEXACO-PI-R、PID-5、BIS/BAS、ECR-R</td><td>大五是发论文的"通用语"，HEXACO近十年增速最快</td></tr>
+            <tr><td>临床评估</td><td>MMPI-2-RF / MMPI-3、PCL-R</td><td>PAI、MCMI-IV、TAS-20、IIP</td><td>MMPI系列在精神科/司法中占统治地位</td></tr>
+            <tr><td>组织/商业</td><td>MBTI、DISC、CliftonStrengths</td><td>16PF、Hogan系列、EQ-i 2.0</td><td>MBTI全球年施测量超350万次，但学术认可最低</td></tr>
+            <tr><td>大众/科普</td><td>MBTI（在线各版本）、九型人格</td><td>大五在线版（IPIP-based）、HSP量表</td><td>社交媒体上MBTI标签热度远超所有其他量表总和</td></tr>
+          </table>
+          </div>
+          <p><strong>关键观察：</strong>学术认可度与大众流行度呈<em>显著负相关</em>。MBTI是全球最"流行"的人格工具，但在学术界被视为信效度不足的"沟通语言"而非严肃测量；大五则学术地位最高，但在大众中知名度远低于MBTI。</p>
+        </div>
+
+        <div class="ov-section">
+          <h3>二、学术认可度分层——哪些量表最"硬"？</h3>
+          <p>综合考量信效度证据、跨文化验证深度、元分析基准使用频率、主流教材收录情况与常模规范性：</p>
+          <div class="tier-grid">
+            <div class="tier-card t1">
+              <div class="tier-label">Tier 1 · 金标准 / 学科基石</div>
+              <p><strong>NEO-PI-R/3</strong>（大五人格）、<strong>MMPI-2-RF/MMPI-3</strong>（临床病理）、<strong>PCL-R</strong>（精神病态）、<strong>ECR-R</strong>（成人依恋）、<strong>Rosenberg SES</strong>（自尊）、<strong>Schwartz PVQ-RR</strong>（价值观）。这些工具各自是其领域内引用最多、验证最充分、几乎不可替代的"参照系"。</p>
+            </div>
+            <div class="tier-card t2">
+              <div class="tier-label">Tier 2 · 主流认可 / 高质量工具</div>
+              <p><strong>BFI-2</strong>、<strong>HEXACO-PI-R</strong>、<strong>IPIP系列</strong>、<strong>PID-5</strong>、<strong>PAI</strong>、<strong>TCI-R</strong>、<strong>VIA-IS</strong>、<strong>BIS/BAS</strong>、<strong>NPI</strong>、<strong>MFQ</strong>、<strong>FFMQ</strong>、<strong>Brief-COPE</strong>、<strong>CD-RISC</strong>。在各自领域被广泛引用且信效度良好，但或因某些局限尚未达到"不可替代"。</p>
+            </div>
+            <div class="tier-card t3">
+              <div class="tier-label">Tier 3 · 领域内有价值 / 有争议</div>
+              <p><strong>16PF</strong>、<strong>EPQ</strong>、<strong>MCMI-IV</strong>、<strong>SD3</strong>、<strong>Grit-S</strong>、<strong>MACH-IV</strong>、<strong>TAS-20</strong>、<strong>SSS-V</strong>、<strong>CPI</strong>、<strong>CPAI-2</strong>、<strong>DS14</strong>。在特定领域有重要贡献，但或因历史原因、或因理论争议（如Grit与尽责性高度重叠），学术"硬度"相对有限。</p>
+            </div>
+            <div class="tier-card t4">
+              <div class="tier-label">Tier 4 · 科普/商业流行但学术支持薄弱</div>
+              <p><strong>MBTI</strong>、<strong>九型人格(RHETI)</strong>、<strong>DISC</strong>、<strong>CliftonStrengths</strong>。在大众文化和企业培训中影响力巨大，但学术界普遍认为其类型化假设缺乏实证基础，不建议用于人事决策或诊断。MBTI的重测一致性约50%（5周内），远低于大五量表的80–90%。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <h3>三、近年新兴趋势与范式转变（2015–2026）</h3>
+          <div class="trend-item"><span class="trend-num">1</span><p><strong>人格障碍的维度化革命（PID-5 / AMPD）</strong> — DSM-5替代性模型将人格障碍从离散类别（"你有/没有边缘型"）转向5个病理域×25个facets的连续维度评估。PID-5引用量年增>30%，代表了从类别到维度的根本性范式转型，ICD-11已全面采纳维度模型。</p></div>
+          <div class="trend-item"><span class="trend-num">2</span><p><strong>黑暗人格研究爆发</strong> — 自Paulhus & Williams(2002)命名"黑暗三联征"以来，SD3/SD4、PNI、NARQ等工具涌现。2021年SD4正式发表，将施虐(Sadism)纳入框架成为"黑暗四联征"。该领域近十年论文产出增长约5倍，成为社会人格心理学最活跃的前沿之一。</p></div>
+          <div class="trend-item"><span class="trend-num">3</span><p><strong>HEXACO的崛起——第六因素"诚实-谦逊"</strong> — H因素在预测不道德行为、腐败、利他合作等方面提供了大五无法解释的增量效度。越来越多的研究者将HEXACO与大五并行使用，部分学者认为H因素应成为人格模型的标配维度。</p></div>
+          <div class="trend-item"><span class="trend-num">4</span><p><strong>数字化/AI人格评估</strong> — 从Kosinski(2015)发现Facebook点赞预测人格准确度超过配偶，到GPT时代的大语言模型自动评分，人格评估正经历数字化转型。开放词汇法(Schwartz等)和计算人格学将测量从"你说你是什么样的人"转向"你的行为数据说你是什么样的人"。伦理争议也随之升级。</p></div>
+          <div class="trend-item"><span class="trend-num">5</span><p><strong>网络方法——人格不再是"潜变量"</strong> — Borsboom等人提出：外向性不是隐藏在行为背后的实体，而是一簇相互激活的行为倾向涌现出的模式。这一本体论挑战推动了心理网络分析(psychonetrics)成为新兴方法论领域。</p></div>
+          <div class="trend-item"><span class="trend-num">6</span><p><strong>经验采样(ESM)与人格动力学</strong> — 智能手机使"一天测多次"成为可能。Fleeson的研究揭示：人们在一周内的外向程度变异几乎覆盖整个量表范围。整体特质理论(WTT)由此将特质重新定义为"行为密度分布"而非固定点，人格从静态画像变为动态电影。</p></div>
+          <div class="trend-item"><span class="trend-num">7</span><p><strong>跨文化本土化复兴</strong> — CPAI的"中国人传统性"因子、SAPI的"关系和谐"因子等证明大五并非文化普遍的"终极答案"。全球南方（南非、菲律宾、印度）正从本文化的语言和哲学中建构独立的人格分类体系，挑战"进口-翻译-验证"的单向范式。</p></div>
+          <div class="trend-item"><span class="trend-num">8</span><p><strong>自适应测试与大数据测量(SAPA/CAT-PD)</strong> — 利用项目反应理论(IRT)从海量题库中动态选题，可将施测题量减少85%而保持相同精度。SAPA项目已收集数十万在线被试数据，代表人格测量从"固定问卷"到"智能自适应"的技术升级。</p></div>
+        </div>
+
+        <div class="ov-section">
+          <h3>四、选型决策指南——什么场景选什么工具？</h3>
+          <div style="overflow-x:auto">
+          <table class="pop-table">
+            <tr><th>使用场景</th><th>首选推荐</th><th>备选/补充</th><th>避免</th></tr>
+            <tr><td>学术发表（正常人格）</td><td>NEO-PI-R/3 或 BFI-2</td><td>HEXACO-PI-R、IPIP</td><td>MBTI、DISC</td></tr>
+            <tr><td>学术发表（病理人格）</td><td>PID-5 + MMPI-2-RF/3</td><td>DAPP-BQ、PAI、SNAP</td><td>仅用MBTI</td></tr>
+            <tr><td>临床心理评估</td><td>MMPI-3 或 PAI</td><td>MCMI-IV、IIP、TCI-R</td><td>仅用在线免费测试</td></tr>
+            <tr><td>精神病态/司法风险</td><td>PCL-R（需认证）</td><td>SRP-4、PPI-R</td><td>自行拼凑</td></tr>
+            <tr><td>组织发展/团队建设</td><td>BFI-2 或 HEXACO（有数据支撑）</td><td>16PF、CPI</td><td>单独依赖MBTI做选拔</td></tr>
+            <tr><td>积极心理干预</td><td>VIA-IS + PWB(Ryff)</td><td>PERMA-Profiler、Grit-S、CD-RISC</td><td>—</td></tr>
+            <tr><td>跨文化比较</td><td>BFI-2 或 HEXACO + CPAI-2</td><td>Schwartz PVQ-RR</td><td>仅用未本土化的翻译版</td></tr>
+            <tr><td>大样本快速筛查</td><td>BFI-10 或 TIPI（10题）</td><td>Mini-IPIP（20题）、PID-5-BF（25题）</td><td>全版240题量表</td></tr>
+            <tr><td>儿童/青少年气质</td><td>CBQ(3-7岁) / EATQ-R(9-15岁)</td><td>IBQ-R(婴儿)、EAS</td><td>直接用成人量表</td></tr>
+            <tr><td>个人探索/科普</td><td>IPIP在线版（免费、有科学基础）</td><td>HEXACO官网、VIA免费版</td><td>付费"性格解读"类产品</td></tr>
+          </table>
+          </div>
+        </div>
+
+        <div class="ov-section">
+          <h3>五、核心判断：当前领域的关键共识与未解之争</h3>
+          <ul>
+            <li><strong>共识：</strong>人格特质是真实的、可测量的、具有生物学基础的，且在成年期相对稳定但非不可变。特质模型（大五/六因素）是当前最佳的描述性框架。</li>
+            <li><strong>共识：</strong>维度模型优于类型模型——人格是连续谱，不是离散类别。这一观点已从人格特质领域扩展到人格障碍领域（DSM-5 AMPD / ICD-11）。</li>
+            <li><strong>共识：</strong>单一工具不足以全面评估人格，多方法多信息源（自陈+观察/访谈+情境测试）是临床评估的黄金标准。</li>
+            <li><strong>争论中：</strong>大五还是六因素？H（诚实-谦逊）应否成为标配？五因素模型是否足够普遍？</li>
+            <li><strong>争论中：</strong>人格是"潜变量"还是"涌现网络"？这一本体论之争将深刻影响下一代测量方法。</li>
+            <li><strong>争论中：</strong>数字足迹预测人格的伦理边界在哪里？准确≠可用，技术能力与伦理许可之间的张力日益突出。</li>
+            <li><strong>争论中：</strong>Grit是否只是尽责性的"换装"？完美主义是特质还是症状？情绪智力是能力还是人格？这些构念的独立性争议仍在持续。</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div id="sections"></div>
+  </main>
+</div>
+
+<script>
+const DATA=[
+{id:'trait',title:'特质论与因素分析',en:'Trait Theory & Factor Analysis',theory:'人格由相对稳定、可量化的"特质"构成，通过因素分析从大量描述词中提炼少数核心维度，是当代人格研究的主干范式。',items:[
+{n:'NEO-PI-R / NEO-PI-3',en:'NEO Personality Inventory',a:'Costa & McCrae',y:'1992 / 2010',i:'240题（简版NEO-FFI：60题）',f:'5点李克特',d:'<b>五大维度</b>：神经质(N)、外倾性(E)、开放性(O)、宜人性(A)、尽责性(C)，每维度含6个子层面（共30 facets）',desc:'大五人格"金标准"。跨文化验证最充分的特质量表，教材、元分析与跨文化研究的基准工具，学术引用极高。',s:5,t:['科研','临床','跨文化']},
+{n:'BFI / BFI-2',en:'Big Five Inventory',a:'John, Soto, Naumann',y:'1991 / 2017',i:'BFI-44：44题；BFI-2：60题；极简BFI-10：10题',f:'5点李克特',d:'<b>五大维度</b>，BFI-2每维度含3个子层面（共15 facets）',desc:'面向大样本调查和跨文化研究的高效大五短量表，短语式条目易于施测，在公共数据集和教学中极为常用。',s:5,t:['科研','跨文化','开放']},
+{n:'IPIP 系列',en:'International Personality Item Pool',a:'Goldberg 等',y:'1999+',i:'IPIP-50/100/300等，可自由组合',f:'5点李克特',d:'可对标大五、HEXACO等多种模型，版本众多',desc:'全球最大的公共领域人格题库，免费、多语言、可自由组合；大量在线测试以此为蓝本，是开放科学的基石工具。',s:5,t:['科研','公域','开放']},
+{n:'HEXACO-PI-R',en:'HEXACO Personality Inventory',a:'Lee & Ashton',y:'2004',i:'全版200题；半版100题；HEXACO-60：60题',f:'5点李克特',d:'<b>六维度</b>：诚实—谦逊(H)、情绪性(E)、外向性(X)、宜人性(A)、尽责性(C)、开放性(O)，共24 facets',desc:'在大五基础上增加"诚实—谦逊"维度。在预测不道德行为、黑暗人格、利他与合作等方面优于传统大五，近十年发展迅速。',s:4,t:['科研','跨文化','开放']},
+{n:'16PF（第五版）',en:'16 Personality Factors Questionnaire',a:'Cattell → Russell & Karol',y:'1949 / 1993（5th）',i:'185题',f:'三选一',d:'<b>16基本因素</b>：乐群(A)、聪慧(B)、稳定(C)、恃强(E)等，可导出五个全局因素',desc:'特质论先驱。在人才测评、职业咨询中应用极广，中国版有全国常模。近年稍被大五/六因素模型分流，但在应用领域仍广泛。',s:4,t:['组织','教育','临床']},
+{n:'EPQ / EPQ-R',en:'Eysenck Personality Questionnaire',a:'Eysenck',y:'1975 / 1985',i:'48–100题（版本因年龄段而异）',f:'是/否二选一',d:'<b>P</b>(精神质)·<b>E</b>(内外向)·<b>N</b>(神经质)·<b>L</b>(掩饰)；E×N可划四种气质类型',desc:'基于生物学与人格层级理论，强调人格维度的神经生理基础。中文版龚耀先修订，全国常模完备，在医学与教育中广泛使用。',s:4,t:['科研','临床','教育']},
+{n:'CPI（修订版）',en:'California Psychological Inventory',a:'Gough',y:'1957 / 1987',i:'434题',f:'是/否',d:'20个民间概念量表 + 3个向量维度（v.1外向/v.2规范/v.3自我实现）',desc:'主要测量正常人的社交能力、成熟度与成就潜能。在人才选拔和职业咨询中应用广泛，是正常人格评估的重要补充工具。',s:4,t:['组织','教育']},
+{n:'EPPS',en:'Edwards Personal Preference Schedule',a:'Edwards',y:'1959',i:'225对迫选题',f:'二选一迫选',d:'<b>15种心理需求</b>：成就、顺从、秩序、表现、自主、亲和、省察、求助、支配、谦卑、慈善、变异、坚毅、性爱、攻击',desc:'基于Murray需求理论，迫选格式减少社会称许性偏差。常用于职业咨询和个人发展，但迫选格式在统计上有一定限制。',s:3,t:['组织','科研']}
+]},
+
+{id:'clinical',title:'临床与病理人格',en:'Clinical & Pathological Personality',theory:'以"能否区分临床群体与常人"为条目筛选依据（经验效标法），或基于DSM/ICD病理维度模型，重视效度量表与临床量表。',items:[
+{n:'MMPI-2',en:'Minnesota Multiphasic Personality Inventory-2',a:'Butcher, Dahlstrom 等',y:'1989',i:'567题',f:'是/否',d:'10个<b>临床量表</b>（Hs/D/Hy/Pd/Mf/Pa/Pt/Sc/Ma/Si）+ 多个效度量表（L/F/K等）+ 内容量表与补充量表',desc:'全球使用最广泛的人格与心理病理自陈工具，超过65个国家使用，文献远超万篇。在精神科、司法评估、人格障碍研究中占统治地位。',s:5,t:['临床','司法','科研','需认证']},
+{n:'MMPI-2-RF / MMPI-3',en:'MMPI-2 Restructured Form / MMPI-3',a:'Ben-Porath & Tellegen',y:'2008 / 2020',i:'RF：338题；MMPI-3：335题',f:'是/否',d:'层级结构：高阶量表 → 重构临床量表(RC) → 特定问题量表 → PSY-5人格病理量表',desc:'对MMPI-2的现代重构，消除冗余和量表间重叠；MMPI-3进一步更新题目内容，增强对当代临床议题的覆盖。效度与临床效用提升。',s:5,t:['临床','司法','科研','需认证']},
+{n:'MMPI-A / MMPI-A-RF',en:'MMPI-Adolescent',a:'Butcher 等 / Archer 等',y:'1992 / 2016',i:'MMPI-A：478题；A-RF：241题',f:'是/否',d:'针对13–18岁群体调整的临床与效度量表',desc:'为青少年群体专门设计，题项贴近其生活经验。A-RF为重构简版，在青少年临床心理评估中地位突出。',s:4,t:['临床','教育','需认证']},
+{n:'MCMI-IV',en:'Millon Clinical Multiaxial Inventory-IV',a:'Millon',y:'2015',i:'195题',f:'是/否',d:'<b>25个量表</b>：15个人格障碍量表 + 10个临床综合征量表，与DSM-5对应',desc:'专门评估人格障碍与临床综合征，与DSM诊断标准紧密关联。在临床心理学中广泛使用，尤其适于人格障碍筛查与鉴别诊断。',s:4,t:['临床','需认证']},
+{n:'PAI',en:'Personality Assessment Inventory',a:'Morey',y:'1991',i:'344题',f:'4点李克特',d:'<b>22个非重叠量表</b>：4个效度 + 11个临床 + 5个治疗 + 2个人际',desc:'全面的临床人格评估工具，量表间无条目重叠，解释清晰。信效度良好，在美国临床评估培训中越来越多地被引入。',s:4,t:['临床','科研']},
+{n:'PID-5',en:'Personality Inventory for DSM-5',a:'Krueger, Derringer 等',y:'2012',i:'全版220题；简版25题（PID-5-BF）',f:'4点李克特（0–3）',d:'<b>5大病理域</b>：负性情感·疏离·对抗·去抑制·精神病质，下设<b>25个facets</b>',desc:'DSM-5"替代性人格障碍模型"(AMPD)的官方维度评估工具。代表人格障碍评估从类别到维度的范式转型，近年学术引用增长极快。',s:4,t:['临床','科研','开放']},
+{n:'DAPP-BQ',en:'Dimensional Assessment of Personality Pathology',a:'Livesley & Jackson',y:'1998',i:'290题',f:'5点李克特',d:'<b>18个下位维度</b> → 4个高阶因素：情绪失调·反社会行为·抑制性·强迫性',desc:'从行为遗传学角度出发的人格病理维度模型。18个维度可追溯到遗传与环境的不同贡献比例，在人格障碍研究中具重要地位。',s:3,t:['临床','科研']},
+{n:'SNAP-2',en:'Schedule for Nonadaptive and Adaptive Personality',a:'Clark',y:'1993 / 2003',i:'390题',f:'是/否',d:'<b>15个特质量表</b> + 3个气质量表（负性情绪·正性情绪·去抑制）+ 效度量表',desc:'整合正常人格与病理人格的桥梁工具，气质维度可对接大五/大三模型。适合研究正常—异常人格的连续谱。',s:3,t:['临床','科研']}
+]},
+
+{id:'dark',title:'黑暗人格与反社会特质',en:'Dark Personality & Antisocial Traits',theory:'聚焦人格的"阴暗面"——自恋、马基雅维利主义、精神病态（"黑暗三联征"）及施虐等社会厌恶性特质，近十年成为人格研究的热门前沿。',items:[
+{n:'SD3（短版黑暗三联征）',en:'Short Dark Triad',a:'Jones & Paulhus',y:'2014',i:'27题（每维度9题）',f:'5点李克特',d:'<b>三维度</b>：马基雅维利主义·自恋·精神病态',desc:'测量亚临床水平黑暗三联征的最常用简版工具。信效度在多项跨文化研究中得到验证，引用量极高。',s:4,t:['科研','开放']},
+{n:'Dirty Dozen',en:'Dirty Dozen Dark Triad',a:'Jonason & Webster',y:'2010',i:'12题（每维度4题）',f:'5–9点李克特',d:'<b>三维度</b>同SD3',desc:'极简黑暗三联征筛查工具，适合大样本调查和时间受限场景。信度尚可但题量极少，建议与其他工具交叉验证。',s:3,t:['科研','开放']},
+{n:'MACH-IV',en:'Machiavellianism Scale',a:'Christie & Geis',y:'1970',i:'20题',f:'5–7点李克特',d:'单维度，测量操纵性、犬儒主义与道德脱离',desc:'马基雅维利主义研究的奠基性量表，基于《君主论》提炼的社会操控倾向。历史悠久，学术引用极多，但因子结构争议较大。',s:4,t:['科研']},
+{n:'NPI / NPI-16',en:'Narcissistic Personality Inventory',a:'Raskin & Hall → Ames 等',y:'1979 / 2006',i:'NPI-40：40对迫选；NPI-16：16对迫选',f:'迫选（自恋vs非自恋陈述）',d:'NPI-40含7个子量表：权威、优越、自恋、展现欲、剥削、虚荣、权力感',desc:'测量亚临床自恋最经典的工具，在社会心理学与人格研究中引用极广。主要测量自大型自恋，对脆弱型自恋覆盖不足。',s:5,t:['科研','开放']},
+{n:'PNI',en:'Pathological Narcissism Inventory',a:'Pincus 等',y:'2009',i:'52题',f:'6点李克特（0–5）',d:'<b>7个子量表</b> → 2个高阶维度：<b>自大型</b>（剥削幻想·自大感·自我牺牲自夸）+ <b>脆弱型</b>（条件性自尊·隐蔽性·贬值·权力幻想）',desc:'弥补NPI仅测自大型自恋的不足，整合病理性自恋的自大与脆弱两面。在临床与社会人格研究中引用快速增长。',s:4,t:['科研','临床']},
+{n:'NARQ',en:'Narcissistic Admiration and Rivalry Questionnaire',a:'Back 等',y:'2013',i:'18题（简版NARQ-S：6题）',f:'6点李克特',d:'<b>2维度</b>：钦慕(Admiration) + 竞争(Rivalry)，各含3 facets',desc:'基于"自恋钦慕与竞争"理论模型，区分自恋的积极自我提升面与攻击性竞争面。结构清晰，近年引用增长迅速。',s:3,t:['科研','开放']},
+{n:'PCL-R',en:'Psychopathy Checklist-Revised',a:'Hare',y:'1991 / 2003',i:'20个条目（0–2评分）',f:'半结构化访谈 + 档案审查',d:'<b>2因素×4 facets</b>：人际(F1a)·情感(F1b)·生活方式(F2a)·反社会行为(F2b)',desc:'精神病态评估的"金标准"，需受训专业人员施测。在司法精神医学、暴力风险评估中占核心地位。非自陈工具。',s:5,t:['临床','司法','需认证','专业施测']},
+{n:'SRP-4',en:'Self-Report Psychopathy Scale-4',a:'Paulhus, Neumann & Hare',y:'2016',i:'64题（简版SRP-SF：29题）',f:'5点李克特',d:'<b>4个子量表</b>：冷酷情感·人际操纵·不稳定生活方式·反社会倾向',desc:'PCL-R的自陈式对应工具，与PCL-R因子结构平行，适合非司法场景中的精神病态特质自评研究。',s:3,t:['科研']},
+{n:'PPI-R',en:'Psychopathic Personality Inventory-Revised',a:'Lilienfeld & Widows',y:'2005',i:'154题',f:'4点李克特',d:'<b>8个子量表</b> → 2个高阶因素：无畏支配(FD) + 自我中心冲动(SCI)',desc:'区分精神病态的"适应性"（无畏、魅力）与"非适应性"（冲动、反社会）成分，对"成功精神病态"研究有独特贡献。',s:3,t:['科研','临床']},
+{n:'Buss-Perry AQ',en:'Aggression Questionnaire',a:'Buss & Perry',y:'1992',i:'29题',f:'5点李克特',d:'<b>4个子量表</b>：身体攻击·言语攻击·愤怒·敌意',desc:'测量攻击性最常用的自陈工具，将攻击性区分为行为、情感和认知成分。跨文化验证广泛，在暴力和愤怒研究中标准引用。',s:4,t:['科研','临床','开放']}
+]},
+
+{id:'bio',title:'气质、生物学与神经敏感性',en:'Temperament, Biology & Neural Sensitivity',theory:'人格差异可追溯到遗传、神经递质与生理机制。气质维度（如趋近/回避、敏感性）相对先天且稳定，性格维度则通过学习与社会化形成。',items:[
+{n:'TCI-R',en:'Temperament and Character Inventory-Revised',a:'Cloninger 等',y:'1993 / 1999',i:'TCI-R：240题；短版TCI-R140：140题',f:'5点李克特',d:'<b>4气质</b>：寻求新奇(NS)·躲避伤害(HA)·奖赏依赖(RD)·坚持有恒(PS)；<b>3性格</b>：自我定向(SD)·合作性(CO)·自我超越(ST)',desc:'整合遗传学、神经生物学与心理学的人格模型。广泛用于人格障碍、成瘾、抑郁的生物精神医学研究和基因-脑影像关联。',s:4,t:['科研','临床']},
+{n:'BIS/BAS量表',en:'BIS/BAS Scales',a:'Carver & White',y:'1994',i:'20题（BIS 7题 + BAS 13题）',f:'4点李克特',d:'<b>BIS</b>（行为抑制系统）+ <b>BAS三子量表</b>：驱力·愉悦追求·奖赏反应性',desc:'操作化Gray的强化敏感性理论(RST)。BIS与焦虑/回避相关，BAS与冲动/趋近相关。在情绪、动机与精神病理研究中引用极广。',s:4,t:['科研','开放']},
+{n:'RST-PQ',en:'Reinforcement Sensitivity Theory-PQ',a:'Corr & Cooper',y:'2016',i:'65题',f:'4点李克特',d:'<b>BIS</b>（焦虑/冲突检测）·<b>FFFS</b>（战斗-逃跑-僵住）·<b>BAS</b>（4 facets：奖赏兴趣·目标驱力·奖赏反应·冲动）+ 防御战斗·逃跑·僵住',desc:'基于修订版RST(rRST)开发，区分BIS（冲突/焦虑）与FFFS（恐惧），比Carver & White量表更精确地反映当代RST理论。',s:3,t:['科研']},
+{n:'SSS-V / BSSS',en:'Sensation Seeking Scale / Brief SSS',a:'Zuckerman',y:'1978 / 2000(Brief)',i:'SSS-V：40题迫选；BSSS：8题',f:'SSS-V迫选；BSSS 5点李克特',d:'SSS-V <b>4子量表</b>：刺激与冒险寻求·体验寻求·去抑制·厌倦易感性',desc:'感觉寻求研究的奠基性工具，与生物学基础（MAO-B、多巴胺）关联最为密切的人格特质量表之一。',s:4,t:['科研','临床']},
+{n:'HSP量表',en:'Highly Sensitive Person Scale',a:'Aron & Aron',y:'1997',i:'27题',f:'7点李克特',d:'原始为<b>单维度</b>；后续研究提示2–3因子：感觉阈限低·审美敏感·易过度激醒',desc:'测量"感觉加工敏感性"(SPS)，即对环境刺激的深度加工倾向。近年与差异易感性理论和兰花/蒲公英模型结合，热度上升。',s:3,t:['科研','科普']},
+{n:'DS14',en:'Type D Personality Scale',a:'Denollet',y:'2005',i:'14题',f:'5点李克特（0–4）',d:'<b>2维度</b>：负性情感(NA) + 社交抑制(SI)；两者均高定义为D型人格',desc:'专门为心血管疾病风险研究设计的人格类型工具。D型人格（忧郁型）与冠心病预后关联的研究证据较多。',s:3,t:['临床','科研']}
+]},
+
+{id:'type',title:'类型学取向',en:'Typological Approaches',theory:'将人格视为离散"类型"而非连续维度，以类型偏好或原型归类解释个体差异。在大众文化中影响力巨大，但学术界对其类型化假设普遍持审慎态度。',items:[
+{n:'MBTI',en:'Myers-Briggs Type Indicator',a:'Myers & Briggs → CPP',y:'1962（Form M: 1998）',i:'Form M标准版：93题',f:'迫选',d:'<b>四维度二分</b>：外倾—内倾(E–I)·感觉—直觉(S–N)·思考—情感(T–F)·判断—知觉(J–P) → 组合为<b>16类型</b>',desc:'全球知名度最高的人格工具，在企业培训与大众文化中影响力极大。但学界主流认为其信效度不足、缺乏重测稳定性，不建议用于诊断或选拔。',s:3,t:['组织','科普']},
+{n:'RHETI（九型人格）',en:'Riso-Hudson Enneagram Type Indicator',a:'Riso & Hudson',y:'1999',i:'144题（v2.5）',f:'迫选配对',d:'<b>9种基本类型</b>（完美者/助人者/成就者/浪漫者/观察者/忠诚者/活跃者/领导者/和平者）+ 侧翼·整合/解离方向',desc:'九型人格的主要商业化量表。在教练、灵性成长领域流行，但科学验证严重不足：因子结构不稳定，重测信度偏低，学术界定位类似MBTI。',s:2,t:['科普','组织']},
+{n:'DISC',en:'DISC Assessment',a:'Marston（理论）→ 多家出版商',y:'1928（理论）/ 现代商用版',i:'因出版商而异（24–80题）',f:'多为迫选/排序',d:'<b>4种行为风格</b>：支配(D)·影响(I)·稳定(S)·服从(C)',desc:'在组织发展和销售培训中极为常见的行为风格模型。理论简洁直观但缺乏独立学术验证，各出版商版本之间差异大且不可互换。',s:2,t:['组织','科普']}
+]},
+
+{id:'interpersonal',title:'人际关系与依恋',en:'Interpersonal & Attachment',theory:'人格的核心表达在人际交往中展现。人际环形模型以"支配—顺从"与"友好—敌意"两轴构建二维空间；依恋理论则关注亲密关系中的安全/焦虑/回避模式。',items:[
+{n:'IAS',en:'Interpersonal Adjective Scales',a:'Wiggins',y:'1995',i:'64个形容词',f:'8点李克特',d:'<b>人际环形</b>8个八分位量表：支配·外向·友好·温暖·顺从·内向·冷漠·敌意',desc:'操作化人际环形模型(IPC)的经典工具，使用形容词来映射人际行为在二维空间中的位置。在人际与临床研究中地位重要。',s:4,t:['科研','临床']},
+{n:'IIP-64 / IIP-32',en:'Inventory of Interpersonal Problems',a:'Horowitz 等',y:'1988 / 2000',i:'IIP-64：64题；IIP-32：32题',f:'5点李克特',d:'<b>8个环形量表</b>：专制·报复·冷漠·回避·不自信·过于迎合·自我牺牲·控制干涉',desc:'从"人际困扰"角度测量人际功能，与IAS互补。广泛用于心理治疗效果评估和人格障碍研究。',s:4,t:['临床','科研']},
+{n:'ECR / ECR-R',en:'Experiences in Close Relationships-Revised',a:'Brennan → Fraley 等',y:'1998 / 2000',i:'36题',f:'7点李克特',d:'<b>2个连续维度</b>：依恋焦虑（对被抛弃的恐惧）+ 依恋回避（对亲密的不适）',desc:'成人依恋研究中使用最广泛的自陈量表，将依恋风格从类型转为维度测量。信效度在数百项研究中得到验证。',s:5,t:['科研','临床','开放']},
+{n:'RQ',en:'Relationship Questionnaire',a:'Bartholomew & Horowitz',y:'1991',i:'4段描述 + 评分',f:'7点评分（各描述的契合度）',d:'<b>4种依恋风格</b>：安全型·先占型（焦虑-矛盾）·疏离型（回避-轻视）·恐惧型（回避-恐惧）',desc:'最简短的成人依恋分类工具，基于自我模型×他人模型的2×2框架。适合快速筛查，但信息量有限，宜与ECR-R配合使用。',s:3,t:['科研','开放']},
+{n:'AAI',en:'Adult Attachment Interview',a:'George, Kaplan & Main',y:'1985',i:'约20个半结构化问题',f:'访谈 → 转录 → 编码',d:'<b>5种分类</b>：自主型·冷淡型·缠绕型·未解决型·无法分类',desc:'成人依恋评估的"金标准"访谈工具，评估的是依恋叙事的连贯性而非内容。需要昂贵培训，施测与编码耗时，多用于发展心理学研究。',s:4,t:['科研','临床','专业施测']},
+{n:'BORRTI',en:'Bell Object Relations & Reality Testing Inventory',a:'Bell',y:'1995',i:'90题',f:'是/否',d:'<b>4个客体关系量表</b>：疏离·不安全依恋·自我中心·社交无能 + <b>3个现实检验量表</b>',desc:'测量客体关系质量与现实检验能力。与精神分析理论对接，在严重人格障碍和精神病性患者评估中有独特价值。',s:3,t:['临床','科研']}
+]},
+
+{id:'self',title:'自我与社会认知',en:'Self & Social-Cognitive',theory:'人格的核心机制不仅在于"特质"，更在于个体如何认知自我、解释因果、评价自身价值。社会认知取向强调信念、期望与自我调节在人格中的核心作用。',items:[
+{n:'Rotter I-E量表',en:'Internal-External Locus of Control Scale',a:'Rotter',y:'1966',i:'29题（含6题填充题）',f:'迫选（内控vs外控陈述）',d:'<b>单维度</b>：内部控制—外部控制的连续谱',desc:'控制源(Locus of Control)研究的奠基性量表。在健康、教育、组织行为学中引用极广，是社会学习理论的标志性操作化工具。',s:5,t:['科研','教育','开放']},
+{n:'Levenson IPC',en:'Levenson Multidimensional Locus of Control',a:'Levenson',y:'1981',i:'24题',f:'6点李克特',d:'<b>3维度</b>：内控(I)·权威他人(P)·机遇(C)',desc:'将Rotter的单维度控制源拓展为三维度，区分"是权威人物还是随机运气在控制"。在健康心理学和跨文化研究中常用。',s:3,t:['科研']},
+{n:'GSE',en:'General Self-Efficacy Scale',a:'Schwarzer & Jerusalem',y:'1995',i:'10题',f:'4点李克特',d:'<b>单维度</b>：一般性自我效能感',desc:'测量个体面对困难与挑战时的整体胜任信念。已被翻译成33+种语言，在健康促进、压力应对和跨文化研究中极常引用。',s:4,t:['科研','教育','开放','跨文化']},
+{n:'RSES',en:'Rosenberg Self-Esteem Scale',a:'Rosenberg',y:'1965',i:'10题',f:'4点李克特',d:'<b>单维度</b>：整体自尊水平',desc:'全球使用最广泛的自尊量表，几乎是自尊研究的"默认选择"。简短、免费、跨文化验证极充分。',s:5,t:['科研','教育','开放','跨文化']},
+{n:'TSCS-2',en:'Tennessee Self-Concept Scale-2',a:'Fitts & Warren',y:'2003',i:'82题',f:'5点李克特',d:'<b>6个自我概念维度</b>：身体·道德·个人·家庭·社交·学业/工作 + 3个补充量表',desc:'多维度自我概念评估的经典工具，区分自我概念的不同领域。在教育和临床中有较多应用，中文版有修订。',s:3,t:['教育','临床']},
+{n:'SCC',en:'Self-Concept Clarity Scale',a:'Campbell 等',y:'1996',i:'12题',f:'5点李克特',d:'<b>单维度</b>：自我概念的清晰度、一致性与稳定性',desc:'测量个体对自我认知的清楚、确定与一致程度。与心理健康、决策和人际关系质量相关，在自我研究中引用增长迅速。',s:3,t:['科研']},
+{n:'EIS（自我同一性地位）',en:'Ego Identity Status Interview',a:'Marcia',y:'1966',i:'半结构化访谈',f:'访谈 → 编码归类',d:'<b>4种同一性地位</b>：同一性达成·延缓·早闭·扩散',desc:'操作化Erikson同一性理论的经典访谈范式。在青少年与新兴成年期发展研究中影响深远，也有对应的自陈问卷版本。',s:4,t:['科研','教育','专业施测']}
+]},
+
+{id:'positive',title:'积极心理学与品格优势',en:'Positive Psychology & Character Strengths',theory:'关注人格的积极面——品格美德、优势、韧性、坚毅与心理繁荣，而非仅聚焦缺陷与病理。代表心理学从"修复损伤"到"培育优势"的转向。',items:[
+{n:'VIA-IS / VIA-IS-R',en:'VIA Inventory of Strengths',a:'Peterson & Seligman',y:'2004 / 修订版',i:'VIA-IS：240题；VIA-IS-R：192题',f:'5点李克特',d:'<b>6大美德下24个品格优势</b>：智慧(创造·好奇·判断·热爱学习·洞察)·勇气(英勇·坚持·诚实·热情)·人道(爱·善良·社交智慧)·正义(团队·公平·领导)·节制(宽恕·谦逊·审慎·自律)·超越(美·感恩·希望·幽默·灵性)',desc:'积极心理学运动的核心测评工具，建构人类共通的美德与品格语言。全球已有数百万人在线完成，学术引用极高。',s:5,t:['科研','教育','科普','开放']},
+{n:'CliftonStrengths',en:'CliftonStrengths (StrengthsFinder)',a:'Clifton / Gallup',y:'2001',i:'177对限时配对',f:'网络限时迫选',d:'<b>34个主题</b> × 4大领域：执行力·影响力·关系建立·战略思维',desc:'全球最大规模的优势评估商业工具，超3000万人完成。在组织发展和教练中广泛应用，但因商业封闭性，独立学术验证有限。',s:3,t:['组织','教育','需认证']},
+{n:'Grit-S',en:'Short Grit Scale',a:'Duckworth & Quinn',y:'2009',i:'Grit-S：8题（原版Grit-O：12题）',f:'5点李克特',d:'<b>2个因子</b>：毅力坚持(Perseverance of Effort) + 兴趣一致性(Consistency of Interest)',desc:'测量对长期目标的热情与坚持。Duckworth的TED演讲使其广为人知，但近年对其增量预测效度争议较多（与尽责性高度重叠）。',s:4,t:['科研','教育','开放']},
+{n:'CD-RISC / CD-RISC-10',en:'Connor-Davidson Resilience Scale',a:'Connor & Davidson',y:'2003',i:'CD-RISC：25题；CD-RISC-10：10题',f:'5点李克特（0–4）',d:'原版<b>5因子</b>：个人能力·信任直觉·积极接纳变化·控制感·灵性影响；CD-RISC-10为单维度',desc:'心理韧性/复原力研究中使用最广泛的量表之一。跨文化验证良好，10题简版尤其适合临床与大样本研究。',s:4,t:['科研','临床','跨文化']},
+{n:'BRS',en:'Brief Resilience Scale',a:'Smith 等',y:'2008',i:'6题',f:'5点李克特',d:'<b>单维度</b>：从逆境中"弹回"的能力',desc:'最简短的复原力量表，强调"反弹"而非抗压资源。6题极简设计适合多种场景嵌入。',s:3,t:['科研','开放']},
+{n:'PsyCap / PCQ',en:'Psychological Capital Questionnaire',a:'Luthans 等',y:'2007',i:'PCQ-24：24题；PCQ-12：12题',f:'6点李克特',d:'<b>4维度(HERO)</b>：希望(Hope)·效能(Efficacy)·韧性(Resilience)·乐观(Optimism)',desc:'积极组织行为学的核心测量工具，关注可开发的心理资本（而非固定特质）。在领导力、绩效和组织干预研究中引用极多。',s:4,t:['组织','科研']},
+{n:'PWB',en:'Psychological Well-Being Scales',a:'Ryff',y:'1989',i:'84/54/42/18题（多版本）',f:'6点李克特',d:'<b>6维度</b>：自主性·环境掌控·个人成长·积极关系·生活目的·自我接纳',desc:'幸福感研究中"幸福论"(eudaimonia)取向的代表量表，与"快乐论"(hedonia)的主观幸福感量表互补。跨文化验证广泛。',s:4,t:['科研','跨文化']},
+{n:'PERMA-Profiler',en:'PERMA Profiler',a:'Butler & Kern',y:'2016',i:'23题',f:'11点评分（0–10）',d:'<b>5大支柱</b>：积极情绪(P)·投入(E)·关系(R)·意义(M)·成就(A)，另含健康·负面情绪·孤独·幸福感',desc:'操作化Seligman的PERMA幸福理论。作为繁荣(flourishing)的综合测量工具，在积极心理学干预研究中使用日益增多。',s:3,t:['科研','教育','开放']}
+]},
+
+{id:'ei',title:'情绪智力与情绪调节',en:'Emotional Intelligence & Emotion Regulation',theory:'情绪智力(EI)指感知、理解、管理情绪的能力或特质。分为能力EI（表现测试）与特质EI（自陈问卷）两大流派，对应不同测量范式。',items:[
+{n:'EQ-i 2.0',en:'Emotional Quotient Inventory 2.0',a:'Bar-On → MHS',y:'1997 / 2011',i:'133题',f:'5点李克特',d:'<b>5个复合量表</b>：自我感知·自我表达·人际·决策·压力管理，下设<b>15个子量表</b>',desc:'最早也是最广泛使用的情绪智力商业量表。采用混合模型，实为"情绪-社会能力"自评，在组织培训中应用极广。',s:4,t:['组织','教育','需认证']},
+{n:'MSCEIT',en:'Mayer-Salovey-Caruso EI Test',a:'Mayer, Salovey & Caruso',y:'2002',i:'141题',f:'能力测试（表现型）',d:'<b>4个分支</b>：情绪感知·情绪促进思维·情绪理解·情绪管理',desc:'唯一被广泛认可的能力型EI测验，有"对错答案"（共识/专家计分）。与自陈EI测量相关性低，测的是不同构念。在EI学术研究中地位核心。',s:4,t:['科研','需认证']},
+{n:'TEIQue',en:'Trait Emotional Intelligence Questionnaire',a:'Petrides',y:'2009',i:'全版153题；简版TEIQue-SF：30题',f:'7点李克特',d:'<b>4因子</b>：幸福感·自我控制·情绪性·社交性，下设<b>15 facets</b>',desc:'特质EI的主要学术量表，明确定位为人格特质（位于人格层级的底层），而非认知能力。全版免费供学术使用。',s:4,t:['科研','开放']},
+{n:'TAS-20',en:'Toronto Alexithymia Scale-20',a:'Bagby, Parker & Taylor',y:'1994',i:'20题',f:'5点李克特',d:'<b>3因子</b>：难以识别感受·难以描述感受·外向性思维',desc:'测量述情障碍（alexithymia）的标准工具——即识别和表达情绪的困难。在心身医学、创伤和成瘾研究中使用极广。',s:4,t:['临床','科研','开放']}
+]},
+
+{id:'values',title:'价值观、道德与认知风格',en:'Values, Morality & Cognitive Style',theory:'人格不仅体现在特质和情绪，也体现在个体优先看重什么（价值观）、如何判断是非（道德基础）、以及偏好何种认知加工方式（认知风格）。',items:[
+{n:'SVS / PVQ-RR',en:'Schwartz Values Survey / Revised PVQ',a:'Schwartz',y:'1992 / 2017',i:'SVS：57项价值评分；PVQ-RR：57题画像描述',f:'SVS：9点重要性评分；PVQ-RR：6点相似性评分',d:'<b>原始10种基本价值</b>（自我定向·刺激·享乐·成就·权力·安全·遵从·传统·慈善·普世主义）→ 精炼理论扩展为<b>19种价值</b>',desc:'跨文化价值观研究的全球标准，在80+国家验证了价值的普遍结构。环形排列揭示价值间兼容与冲突关系，在政治、消费和组织研究中核心引用。',s:5,t:['科研','跨文化']},
+{n:'RVS',en:'Rokeach Value Survey',a:'Rokeach',y:'1973',i:'36个价值（18终极+18工具）',f:'排序法',d:'<b>终极价值</b>（如自由、幸福、内心和谐）+ <b>工具价值</b>（如勇敢、诚实、负责）',desc:'价值观研究的先驱工具，将价值区分为目的(终极)与手段(工具)。排序法提供个体内价值优先级，但不便做跨个体统计比较。',s:3,t:['科研']},
+{n:'MFQ',en:'Moral Foundations Questionnaire',a:'Graham, Haidt 等',y:'2011',i:'30题',f:'6点李克特',d:'<b>5(+1)道德基础</b>：关怀/伤害·公平/欺骗·忠诚/背叛·权威/颠覆·圣洁/堕落（+自由/压迫）',desc:'道德基础理论的操作化工具，揭示自由派vs保守派的道德心理差异。在政治心理学和道德判断研究中引用极多。',s:4,t:['科研','开放']},
+{n:'NFC',en:'Need for Cognition Scale',a:'Cacioppo & Petty',y:'1982',i:'18题（从原34题精简）',f:'5点李克特',d:'<b>单维度</b>：享受思考和认知努力的倾向',desc:'测量个体对深度思考的内在动机。在说服、决策、信息加工研究中是标准调节变量，引用极广。',s:4,t:['科研','开放']},
+{n:'5DC / CEI-II',en:'Five-Dimensional Curiosity / Curiosity & Exploration Inventory',a:'Kashdan 等',y:'2018 / 2009',i:'5DC：25题；CEI-II：10题',f:'7点 / 5点李克特',d:'5DC <b>5维度</b>：愉悦探索·剥夺敏感性·压力容忍·社交好奇·刺激寻求',desc:'近年好奇心研究的代表量表，从单维度到多维度的理论演进。Kashdan等提出的五维模型是当前好奇心测量的最前沿。',s:3,t:['科研']},
+{n:'MPS（完美主义）',en:'Multidimensional Perfectionism Scale',a:'Hewitt & Flett (1991) / Frost (1990)',y:'1990–1991',i:'H&F版：45题；Frost版：35题',f:'7点(H&F) / 5点(Frost)李克特',d:'H&F <b>3维度</b>：自我导向·他人导向·社会规定完美主义；Frost <b>6维度</b>：个人标准·担忧错误·怀疑行动·组织性·父母期望·父母批评',desc:'两个MPS互补使用，在临床（进食障碍、抑郁、焦虑）和成就情境研究中都是标准参考工具。学术引用量极高。',s:4,t:['科研','临床']},
+{n:'ASQ',en:'Attributional Style Questionnaire',a:'Peterson 等',y:'1982',i:'12个假设情境×3评分',f:'7点评分',d:'<b>3归因维度</b>：内在性·稳定性·整体性 × 积极/消极事件',desc:'测量个体将好/坏事件归因于内/外、稳定/暂时、整体/局部的倾向。习得性无助与抑郁理论的核心操作化工具。',s:3,t:['科研','临床']}
+]},
+
+{id:'coping',title:'正念、自我决定与应对防御',en:'Mindfulness, SDT & Coping/Defense',theory:'涵盖正念觉察（对当下的开放注意）、基本心理需求（自主·能力·关联）、以及面对压力时的应对策略和无意识防御机制。',items:[
+{n:'FFMQ',en:'Five Facet Mindfulness Questionnaire',a:'Baer 等',y:'2006',i:'39题',f:'5点李克特',d:'<b>5个面向</b>：观察·描述·有觉知地行动·不评判内在体验·不对内在体验起反应',desc:'正念特质测量中最常用的多维度工具，从五个已有正念量表中用因素分析提取出五个共性面向。正念干预研究的标准前后测工具。',s:4,t:['科研','临床']},
+{n:'MAAS',en:'Mindful Attention Awareness Scale',a:'Brown & Ryan',y:'2003',i:'15题',f:'6点李克特',d:'<b>单维度</b>：日常生活中正念注意与觉察的频率',desc:'测量正念特质的单维度量表，设计简洁，施测快速。与FFMQ互补：MAAS侧重"缺乏自动化行为"，FFMQ侧重"多面向正念品质"。',s:4,t:['科研','开放']},
+{n:'BPNS',en:'Basic Psychological Needs Scale',a:'Deci & Ryan',y:'2000',i:'21题（多个版本）',f:'7点李克特',d:'<b>3个基本心理需求</b>：自主性·能力感·关联性',desc:'自我决定理论(SDT)的核心操作化工具。三个需求的满足程度预测内在动机、心理健康和行为持续性，在教育和工作动机研究中极为核心。',s:4,t:['科研','教育','组织']},
+{n:'Brief-COPE',en:'Brief COPE',a:'Carver',y:'1997',i:'28题',f:'4点李克特',d:'<b>14个应对策略</b>：积极应对·计划·正面重释·接纳·幽默·宗教·情感支持·工具支持·自我分散·否认·发泄·物质使用·行为脱离·自我责备',desc:'应对策略研究中使用最广泛的简版工具，从原COPE量表(60题)精简而来。14策略可灵活组合为问题聚焦/情绪聚焦/回避三类。',s:4,t:['科研','临床','开放']},
+{n:'WCQ',en:'Ways of Coping Questionnaire',a:'Folkman & Lazarus',y:'1988',i:'66题',f:'4点李克特',d:'<b>8种应对方式</b>：对抗·疏远·自控·寻求社会支持·承担责任·逃避·有计划问题解决·积极重评',desc:'应对研究的奠基性工具，基于Lazarus的认知评价-应对理论。在压力与健康研究中被大量引用，但部分量表的信度偏低。',s:4,t:['科研','临床']},
+{n:'DSQ-40',en:'Defense Style Questionnaire',a:'Andrews, Singh & Bond',y:'1993',i:'40题',f:'9点李克特',d:'<b>3种防御风格</b>：成熟型（幽默、升华、预期）·神经症型（理想化、假利他、反向形成）·不成熟型（投射、被动攻击、付诸行动、退缩等）',desc:'自陈式防御机制评估的主要工具。将精神分析的防御概念操作化为可量化的问卷形式，但"能否自陈无意识防御"在理论上仍有争议。',s:3,t:['科研','临床']}
+]},
+
+{id:'child',title:'儿童与青少年气质',en:'Child & Adolescent Temperament',theory:'气质是人格发展的生物学基础，在生命早期即可观测。Rothbart模型强调反应性与自我调节，Thomas & Chess关注气质与环境的"拟合优度"。',items:[
+{n:'IBQ-R / IBQ-R-VSF',en:'Infant Behavior Questionnaire-Revised',a:'Rothbart 等',y:'2003',i:'全版191题；短版91题；极短版37题',f:'7点李克特（父母报告）',d:'<b>14个量表</b> → 3大因素：正性情感/外向性·负性情感·定向/调节能力',desc:'3–12月龄婴儿气质测量的标准工具。父母报告方式广泛用于婴儿发展和早期社会情绪研究。Rothbart体系的起点。',s:4,t:['科研','发展']},
+{n:'CBQ',en:'Children\'s Behavior Questionnaire',a:'Rothbart 等',y:'2001',i:'全版195题；短版94题；极短版36题',f:'7点李克特（父母报告）',d:'<b>15个量表</b> → 3大因素：外向性·负性情感·努力控制',desc:'3–7岁儿童气质的标准测量，是IBQ-R的年龄衔接版。"努力控制"(effortful control)维度对学校适应和行为问题研究有核心价值。',s:4,t:['科研','发展','教育']},
+{n:'EATQ-R',en:'Early Adolescent Temperament Questionnaire-Revised',a:'Ellis & Rothbart',y:'2001',i:'65题',f:'5点李克特（自陈或父母版）',d:'<b>10个量表</b> → 3大因素：外向性·负性情感·努力控制',desc:'Rothbart气质体系在青少年期(9–15岁)的延伸。同时提供自陈版和父母报告版，填补了儿童气质与成人人格之间的发展评估空白。',s:3,t:['科研','发展']},
+{n:'EAS',en:'EAS Temperament Survey',a:'Buss & Plomin',y:'1984',i:'20题',f:'5点李克特',d:'<b>4维度</b>：情绪性(Emotionality)·活动性(Activity)·社交性(Sociability)·害羞(Shyness)',desc:'基于Buss & Plomin的气质遗传理论，强调高遗传率的核心气质维度。简短易用，在行为遗传学和双生子研究中常用。',s:3,t:['科研','发展']},
+{n:'NYLS气质维度',en:'New York Longitudinal Study Temperament',a:'Thomas & Chess',y:'1977',i:'多种问卷（BSQ等），题量不一',f:'多为6–7点李克特（父母报告）',d:'<b>9个气质维度</b>：活动水平·节律性·趋避性·适应性·反应阈限·反应强度·心境品质·注意分散度·注意广度/持久性 → 3种类型（易养·难养·慢热）',desc:'气质研究的历史里程碑。提出的"拟合优度"概念影响深远——问题不在于气质本身好坏，而在于气质与环境要求是否匹配。',s:4,t:['科研','发展','临床']}
+]},
+
+{id:'projective',title:'投射与非自陈方法',en:'Projective & Non-Self-Report Methods',theory:'通过模糊/非结构化刺激（墨迹、图片、绘画、未完成句子）或个人构念引出，探索意识之外的动机、冲突与心理结构。信效度受评分系统影响大。',items:[
+{n:'Rorschach / R-PAS',en:'Rorschach Inkblot Method / R-PAS',a:'Rorschach → Exner → Meyer 等',y:'1921 / CS:1974 / R-PAS:2011',i:'10张标准墨迹图',f:'个体施测，逐张呈现，记录反应',d:'R-PAS编码系统：位置·决定因子（形状/颜色/运动）·内容·认知特殊分数 → 多种综合指标',desc:'临床心理学的标志性投射工具。R-PAS（基于表现评估的罗夏系统）在Exner综合系统基础上进一步提升了标准化和国际规范。',s:4,t:['临床','专业施测']},
+{n:'TAT',en:'Thematic Apperception Test',a:'Murray & Morgan',y:'1935',i:'全套31张图片，每次选约20张',f:'个体施测，编故事',d:'评分维度：主角特征·内在/外在需要·情境压力·主题与结局·客体关系模式',desc:'通过对模糊图片编故事来揭示需要、动机与客体关系。在临床深度理解和质性研究中仍有独特价值，但耗时且评分主观性高。',s:3,t:['临床','专业施测']},
+{n:'HTP / DAP',en:'House-Tree-Person / Draw-A-Person',a:'Buck / Machover',y:'1948 / 1949',i:'3–4张绘画',f:'绘画 + 询问',d:'通过绘画内容、细节、大小、位置等推断自我概念、情绪状态与人际关系',desc:'在儿童临床评估和会谈中常用作"破冰"与辅助工具。但作为独立诊断手段，信效度证据极为薄弱，不宜单独使用。',s:2,t:['临床','教育']},
+{n:'RISB',en:'Rotter Incomplete Sentences Blank',a:'Rotter & Rafferty',y:'1950',i:'40个未完成句子',f:'书面完成句子',d:'客观计分系统（冲突/积极/中性）+ 临床质性分析',desc:'填句测验中标准化程度最高的版本，可定量计分。作为临床会谈的补充工具具有一定实用价值，施测简便快速。',s:3,t:['临床']},
+{n:'Rep Grid',en:'Repertory Grid Technique',a:'Kelly',y:'1955',i:'个体化（无固定题量）',f:'引出个人构念 → 矩阵评分',d:'由受测者自行生成二极构念，对角色/元素进行评分，形成个体独特的<b>构念矩阵</b>',desc:'Kelly个人构念理论的操作化方法。每个人的"量表"都是独一无二的，极度个体化。在建构主义心理治疗和组织咨询中有独特应用价值。',s:3,t:['临床','组织','科研']}
+]},
+
+{id:'crosscultural',title:'跨文化本土量表',en:'Cross-Cultural Indigenous Scales',theory:'西方主流人格模型是否具有文化普遍性？本土化路径从各文化自身的词汇、价值观和社会关系出发，发现文化特异性的人格维度。',items:[
+{n:'CPAI-2',en:'Chinese Personality Assessment Inventory-2',a:'张妙清(Cheung Fanny)等',y:'1996 / 2004',i:'433题',f:'是/否',d:'<b>4个大因素</b>：社会效能·可靠性·容纳性·人际关系性 + 独特的<b>"中国人传统性"(Chinese Tradition)</b>因子（含人情·面子·节俭·和谐等facets）',desc:'最成功的非西方本土人格量表。"中国人传统性"因子无法被大五完全解释，证明了人格结构的文化特异性。已被翻译用于多个亚洲文化验证。',s:4,t:['科研','临床','跨文化']},
+{n:'SAPI',en:'South African Personality Inventory',a:'Nel, Valchev 等',y:'2012+',i:'146+题（仍在发展中）',f:'5点李克特',d:'<b>6+因素</b>：包含西方模型的对应维度 + 独特因素如关系和谐(Relationship Harmony)·软心肠(Soft-Heartedness)·正直(Integrity)·促进性(Facilitation)',desc:'从11种南非官方语言出发构建的本土人格模型，纳入Ubuntu哲学中的关系性维度。代表全球南方在人格研究中的自主话语权建设。',s:3,t:['科研','跨文化']},
+{n:'PUP（菲律宾人格量表）',en:'Panukat ng Ugali at Pagkatao',a:'Enriquez / PPRTH',y:'1970s+',i:'160题',f:'5点双极评分',d:'<b>24个特质量表 + 2个效度量表</b>，源于菲律宾本土词汇、谚语和文化描述；Church & Katigbak词汇研究发现至少<b>7个因素</b>才能涵盖菲律宾人格空间',desc:'Sikolohiyang Pilipino（菲律宾心理学）运动的核心工具。核心构念kapwa（共享身份）挑战西方自我-他人二分，体现"内生本土化"方法论。',s:3,t:['科研','跨文化']},
+{n:'印度三德人格量表',en:'Triguna Scales (VPI / Mysore)',a:'Wolf (VPI) / Shilpa & Murthy',y:'1999 / 2012',i:'VPI与Mysore版各有不同题量',f:'李克特评分',d:'<b>三德(Triguna)</b>：萨埵(Sattva,纯质/和谐)·罗阇(Rajas,动质/激情)·多磨(Tamas,暗质/惰性)',desc:'源于吠陀哲学与数论派的人格三维模型。非固定特质而是动态平衡——可通过修行、饮食和灵性实践改变。与大五有经验性对应关系。',s:2,t:['科研','跨文化']},
+{n:'墨西哥民族心理量表',en:'Mexican Ethnopsychology Inventory',a:'Díaz-Guerrero',y:'1975+',i:'多版本',f:'李克特/迫选',d:'测量<b>历史-社会文化前提(HSCPs)</b>及衍生人格类型：machismo·顺从式情感·自我牺牲·权威恐惧·家族荣誉等维度',desc:'拉美本土人格心理学的代表。发现墨西哥人面对压力时倾向被动忍耐式应对(vs美国人的主动应对)，与文化前提相关。',s:2,t:['科研','跨文化']},
+{n:'日本Amae / 韩国Jeong',en:'Amae (Doi) / Jeong (Choi)',a:'土居健郎(Doi) / 崔尚真(Choi)',y:'1971 / 1990s+',i:'概念框架（部分有操作化量表）',f:'多种',d:'<b>甘え(Amae)</b>：期望他人善意依赖的欲望，解释日本社会的察し/建前-本音动力；<b>情(Jeong)</b>：韩国人际深层情感纽带，通过长期接近自然形成，创造强烈的互助义务',desc:'东亚独有的关系性人格/情感构念，无法被西方依恋理论或大五完全捕捉。代表了"以关系为单位"理解人格的文化心理学路径。',s:2,t:['科研','跨文化']}
+]},
+
+{id:'frontier',title:'新范式与数字化前沿',en:'New Paradigms & Digital Frontiers',theory:'超越传统"潜在特质→自陈问卷"范式：网络模型将人格视为因果连接的组分网络；情境科学关注人格×环境交互；数字化方法从行为足迹直接推断人格。',items:[
+{n:'人格网络方法',en:'Network Approach to Personality',a:'Borsboom, Cramer, Costantini 等',y:'2010s+',i:'非特定量表——是一种分析/建模框架',f:'可应用于任何人格数据',d:'将人格视为<b>因果连接的组分网络</b>而非潜在变量的反映指标；节点=行为/认知/情感成分，边=因果或统计关联',desc:'挑战"潜在特质"本体论——"外向性"不是隐藏在行为背后的实体，而是一簇相互激活的行为倾向自组织而成的模式。在方法论上推动心理网络分析(psychonetrics)。',s:3,t:['科研','前沿']},
+{n:'整体特质理论(WTT)',en:'Whole Trait Theory',a:'Fleeson & Jayawickreme',y:'2015',i:'理论框架，非特定量表',f:'结合经验采样(ESM)与传统问卷',d:'将特质分解为<b>描述成分</b>（行为分布的密度分布）和<b>解释成分</b>（产生行为分布的社会认知机制）',desc:'整合特质与社会认知两大传统：特质是真实的（表现为个体内行为分布），但需要社会认知机制来解释为什么这个人的分布长这样。',s:3,t:['科研','前沿']},
+{n:'CAPS / If-Then人格签名',en:'Cognitive-Affective Processing System',a:'Mischel & Shoda',y:'1995',i:'理论框架 + 情境实验范式',f:'行为观察、经验采样、实验情境',d:'<b>If-Then签名</b>：稳定的"如果情境X，则行为Y"模式；5类认知-情感单元：编码·期望/信念·情感·目标/价值·能力/自我调节计划',desc:'对"人格是否一致"之争的经典回答：一致性不在跨情境的行为平均，而在情境-行为的条件概率模式。影响深远但难以大规模测量。',s:4,t:['科研']},
+{n:'DIAMONDS / S8*',en:'DIAMONDS Situational Taxonomy',a:'Rauthmann 等',y:'2014',i:'S8*量表：8题；全版32题',f:'7点李克特',d:'<b>8个情境维度</b>：义务(Duty)·智识(Intellect)·逆境(Adversity)·交配(Mating)·积极(pOsitivity)·消极(Negativity)·欺骗(Deception)·社交(Sociality)',desc:'系统化描述"心理活性情境"的分类框架。与人格交互研究：不同人格的人选择和制造不同的情境，填补了人格研究中"情境"的测量空白。',s:3,t:['科研','前沿']},
+{n:'SAPA项目',en:'Synthetic Aperture Personality Assessment',a:'Revelle 等 / Northwestern',y:'持续进行中',i:'基于IRT的自适应测试，每人约100+题',f:'在线自陈 + 项目反应理论(IRT)',d:'从超大题库中自适应抽题，构建人格的<b>合成口径</b>——类似射电望远镜用多个小天线合成大口径',desc:'利用海量在线被试(数十万人)和IRT技术，以极低成本实现高精度人格测量。代表大数据时代人格心理测量学的前沿。',s:3,t:['科研','前沿','开放']},
+{n:'数字足迹人格预测',en:'Digital Footprint Personality Prediction',a:'Kosinski, Stillwell, Youyou 等',y:'2013+',i:'非问卷——分析数字行为数据',f:'机器学习模型 → 人格预测',d:'从社交媒体点赞、文本、音乐偏好、手机使用模式等<b>数字行为痕迹</b>推断大五人格',desc:'Kosinski等2015年发现，基于Facebook点赞的计算模型预测人格准确度超过同事甚至配偶。引发对隐私和AI伦理的深刻讨论。',s:3,t:['科研','前沿']},
+{n:'开放词汇法',en:'Open Vocabulary Approach',a:'Schwartz, Park, Kern 等',y:'2013',i:'非问卷——分析自由文本',f:'NLP + 统计学习',d:'不预设维度，从大量自然语言文本中<b>数据驱动</b>地发现人格相关的词汇/短语簇',desc:'超越传统"封闭词汇"(Likert)的测量方式。使用社交媒体帖文、作文等自由文本，用主题模型和差异词云发现人格的语言标记。',s:3,t:['科研','前沿']},
+{n:'经验采样法(ESM/EMA)',en:'Experience Sampling / Ecological Momentary Assessment',a:'Csikszentmihalyi → Fleeson 等',y:'1977+ / 2000s+应用于人格',i:'每天多次短问卷（通过手机推送）',f:'即时自陈（通常2–10题/次）',d:'测量<b>人格状态</b>的瞬时变动（如此刻的外向程度），而非追溯性的特质平均',desc:'将人格从"你通常是怎样的"转向"你此时此刻是怎样的"。揭示了人格的个体内变异性，支撑了Whole Trait Theory和人格动力学研究。',s:3,t:['科研','前沿']},
+{n:'加州Q分类法(CAQ)',en:'California Adult Q-Sort',a:'Block',y:'1961 / 2008',i:'100张特质描述卡片',f:'强制正态分布排序（最不像→最像）',d:'<b>100个人格描述</b>被排入9级强制分布，可计算与"理想原型"的相关',desc:'Q分类法在人格评估中的代表应用。强制分布排序使项目间具有"等差性"(ipsative)。Block的纵向研究用CAQ追踪了人格跨数十年的稳定与变化。',s:3,t:['科研','专业施测']}
+]}
+];
+
+function render(){
+  const toc=document.getElementById('toc');
+  const sections=document.getElementById('sections');
+  const stats=document.getElementById('stats');
+  let totalCount=0;
+  DATA.forEach(s=>totalCount+=s.items.length);
+  document.getElementById('total-count').textContent=totalCount;
+  document.getElementById('sidebar-count').textContent=totalCount+' 项工具 · '+DATA.length+' 大类';
+
+  const statHTML=DATA.map(s=>`<span class="stat-chip"><b>${s.items.length}</b>${s.title.replace(/与|、/g,'/')}</span>`).join('');
+  stats.innerHTML=statHTML;
+
+  let tocHTML='<a class="toc-item" href="#overview" data-id="overview" style="font-weight:600;color:var(--accent-text)"><span class="num" style="font-size:13px">&#9733;</span>领域综述</a>';
+  let secHTML='';
+  DATA.forEach((s,i)=>{
+    const num=String(i+1).padStart(2,'0');
+    tocHTML+=`<a class="toc-item" href="#${s.id}" data-id="${s.id}"><span class="num">${num}</span>${s.title}<span class="num" style="margin-left:auto">${s.items.length}</span></a>`;
+    let cardsHTML=s.items.map(it=>{
+      const dots=Array.from({length:5},(_,j)=>`<span class="dot ${j<it.s?'filled':'empty'}"></span>`).join('');
+      const tags=it.t.map(t=>`<span class="tag">${t}</span>`).join('');
+      return `<div class="card" data-search="${(it.n+' '+it.en+' '+it.a+' '+it.desc+' '+it.d+' '+it.t.join(' ')).toLowerCase()}">
+        <div class="card-top">
+          <div><span class="card-name">${it.n}</span><span class="card-name-en">${it.en||''}</span></div>
+          <div class="standing" title="学界吨位">${dots}</div>
+        </div>
+        <div class="meta-row">
+          <span class="meta author">${it.a}</span>
+          <span class="meta year">${it.y}</span>
+          <span class="meta items">${it.i}</span>
+          <span class="meta format">${it.f}</span>
+        </div>
+        <p class="card-desc">${it.desc}</p>
+        <div class="card-dims">${it.d}</div>
+        <div class="tags-row">${tags}</div>
+      </div>`;
+    }).join('');
+    secHTML+=`<div class="section" id="${s.id}">
+      <div class="section-header" onclick="toggleSection('${s.id}')">
+        <span class="section-num">${num}</span>
+        <span class="section-title">${s.title}<span class="section-title-en">${s.en}</span></span>
+        <span class="section-count">${s.items.length}项</span>
+        <span class="section-arrow open" id="arrow-${s.id}">&#9660;</span>
+      </div>
+      <div class="section-body" id="body-${s.id}">
+        <div class="theory-note">${s.theory}</div>
+        <div class="cards">${cardsHTML}</div>
+      </div>
+    </div>`;
+  });
+  toc.innerHTML=tocHTML;
+  sections.innerHTML=secHTML;
+
+  document.querySelectorAll('.section-body').forEach(el=>{
+    el.style.maxHeight=el.scrollHeight+'px';
+  });
+  const ovBody=document.getElementById('body-overview');
+  if(ovBody)ovBody.style.maxHeight=ovBody.scrollHeight+'px';
+
+  document.querySelectorAll('.toc-item').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const id=a.dataset.id;
+      const target=document.getElementById(id);
+      if(target){
+        const body=document.getElementById('body-'+id);
+        if(body.classList.contains('collapsed')){toggleSection(id);}
+        target.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+      if(window.innerWidth<=860)toggleSidebar();
+    });
+  });
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.toc-item').forEach(a=>a.classList.remove('active'));
+        const a=document.querySelector(`.toc-item[data-id="${e.target.id}"]`);
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-80px 0px -60% 0px',threshold:0});
+  document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+}
+
+function toggleOverview(){
+  const body=document.getElementById('body-overview');
+  const arrow=document.getElementById('arrow-overview');
+  if(body.classList.contains('collapsed')){
+    body.classList.remove('collapsed');
+    body.style.maxHeight=body.scrollHeight+'px';
+    arrow.classList.add('open');
+  }else{
+    body.style.maxHeight=body.scrollHeight+'px';
+    requestAnimationFrame(()=>{body.classList.add('collapsed');body.style.maxHeight='0';});
+    arrow.classList.remove('open');
+  }
+}
+
+function toggleSection(id){
+  const body=document.getElementById('body-'+id);
+  const arrow=document.getElementById('arrow-'+id);
+  if(body.classList.contains('collapsed')){
+    body.classList.remove('collapsed');
+    body.style.maxHeight=body.scrollHeight+'px';
+    arrow.classList.add('open');
+  }else{
+    body.style.maxHeight=body.scrollHeight+'px';
+    requestAnimationFrame(()=>{body.classList.add('collapsed');body.style.maxHeight='0';});
+    arrow.classList.remove('open');
+  }
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+document.getElementById('search').addEventListener('input',function(){
+  const q=this.value.toLowerCase().trim();
+  let anyVisible=false;
+  document.querySelectorAll('.section').forEach(sec=>{
+    const cards=sec.querySelectorAll('.card');
+    let sectionVisible=false;
+    cards.forEach(c=>{
+      const match=!q||c.dataset.search.includes(q);
+      c.style.display=match?'':'none';
+      if(match)sectionVisible=true;
+    });
+    sec.style.display=sectionVisible?'':'none';
+    if(sectionVisible){
+      anyVisible=true;
+      const body=document.getElementById('body-'+sec.id);
+      if(q&&body.classList.contains('collapsed'))toggleSection(sec.id);
+    }
+  });
+  let nr=document.getElementById('no-results');
+  if(!anyVisible){
+    if(!nr){nr=document.createElement('div');nr.id='no-results';nr.className='no-results';nr.textContent='未找到匹配的量表';document.getElementById('sections').appendChild(nr);}
+    nr.style.display='';
+  }else if(nr){nr.style.display='none';}
+});
+
+render();
+</script>

@@ -1,0 +1,591 @@
+<title>题库收集进度</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #F4F2ED;
+  --surface: #ECEAE4;
+  --surface-alt: #E4E1DA;
+  --text-1: #2B2A27;
+  --text-2: #6D6B65;
+  --text-3: #9B9890;
+  --accent: #3C6E5A;
+  --accent-soft: #DAE9E1;
+  --accent-text: #2E5444;
+  --border: #D4D1CA;
+  --border-light: #E0DDD7;
+  --check-bg: #3C6E5A;
+  --p1: #8F3B4A;
+  --p1-bg: #F4E4E7;
+  --p2: #B07830;
+  --p2-bg: #F5EDDF;
+  --p3: #3C6E5A;
+  --p3-bg: #DAE9E1;
+  --p4: #5E7389;
+  --p4-bg: #E0E6EC;
+  --p5: #908C86;
+  --p5-bg: #ECEAE6;
+  --dot-on: #3C6E5A;
+  --dot-off: #D4D1CA;
+  --row-hover: #EDEBD5;
+  --collected-bg: rgba(60,110,90,.06);
+  --input-bg: #fff;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1A18;--surface:#252320;--surface-alt:#2E2B28;--text-1:#DDD9D3;--text-2:#9B9890;--text-3:#6D6B65;--accent:#6AA88B;--accent-soft:#1E2E26;--accent-text:#7DBB9C;--border:#3A3733;--border-light:#2E2B28;--check-bg:#6AA88B;--p1:#D4677A;--p1-bg:#2E1E22;--p2:#D4A44E;--p2-bg:#2E2618;--p3:#6AA88B;--p3-bg:#1E2E26;--p4:#7E9BB5;--p4-bg:#1E2630;--p5:#787470;--p5-bg:#252320;--dot-on:#6AA88B;--dot-off:#3A3733;--row-hover:#2A2820;--collected-bg:rgba(106,168,139,.06);--input-bg:#1E1D1A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1A18;--surface:#252320;--surface-alt:#2E2B28;--text-1:#DDD9D3;--text-2:#9B9890;--text-3:#6D6B65;--accent:#6AA88B;--accent-soft:#1E2E26;--accent-text:#7DBB9C;--border:#3A3733;--border-light:#2E2B28;--check-bg:#6AA88B;--p1:#D4677A;--p1-bg:#2E1E22;--p2:#D4A44E;--p2-bg:#2E2618;--p3:#6AA88B;--p3-bg:#1E2E26;--p4:#7E9BB5;--p4-bg:#1E2630;--p5:#787470;--p5-bg:#252320;--dot-on:#6AA88B;--dot-off:#3A3733;--row-hover:#2A2820;--collected-bg:rgba(106,168,139,.06);--input-bg:#1E1D1A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text-1);font-family:'IBM Plex Sans','PingFang SC','Microsoft YaHei',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1340px;margin:0 auto;padding:28px 24px 80px}
+header{margin-bottom:24px}
+header h1{font-family:'Crimson Pro','Noto Serif SC',serif;font-size:28px;font-weight:700;color:var(--text-1);margin-bottom:4px}
+header .sub{font-size:13px;color:var(--text-2);max-width:700px;line-height:1.65;margin-bottom:18px}
+.stats-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.stat{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:var(--surface);border:1px solid var(--border-light);border-radius:6px;font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.stat b{font-weight:600;color:var(--text-1)}
+.stat .pct{color:var(--accent-text);font-weight:600}
+.progress-wrap{flex:1 1 180px;max-width:260px;height:8px;background:var(--surface-alt);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.search-box{position:relative;flex:1 1 200px;max-width:320px}
+.search-box input{width:100%;padding:7px 12px 7px 32px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text-1);font:inherit;font-size:13px;outline:none;transition:border-color .15s}
+.search-box input:focus{border-color:var(--accent)}
+.search-box input::placeholder{color:var(--text-3)}
+.search-box svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+.filter-btn{padding:5px 11px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text-2);font:inherit;font-size:12px;cursor:pointer;transition:all .12s;white-space:nowrap}
+.filter-btn:hover{background:var(--surface-alt);color:var(--text-1)}
+.filter-btn.active{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent);font-weight:500}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{position:sticky;top:0;z-index:2}
+th{padding:9px 10px;background:var(--surface-alt);color:var(--text-2);font-weight:600;font-size:11.5px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap;letter-spacing:.03em;user-select:none}
+th.sortable{cursor:pointer}
+th.sortable:hover{color:var(--text-1)}
+th .arrow{font-size:9px;margin-left:3px;opacity:.4}
+th.sorted .arrow{opacity:1;color:var(--accent-text)}
+td{padding:7px 10px;border-bottom:1px solid var(--border-light);vertical-align:top;color:var(--text-1)}
+tr:hover td{background:var(--row-hover)}
+tr.collected td{background:var(--collected-bg)}
+tr.collected .name-main{opacity:.85}
+.cb-cell{width:32px;text-align:center}
+.st-cell{white-space:nowrap}
+.st-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.02em;line-height:1.6}
+.st-full{background:#dff0e8;color:#2a6e4a}
+.st-risk{background:#fde8d0;color:#a05a20}
+.st-partial{background:#f5eddf;color:#7a6530}
+.st-struct{background:#e3eef7;color:#3a6a8e}
+.st-framework{background:var(--p5-bg);color:var(--p5)}
+.pri{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.04em;line-height:1.6}
+.pri-1{background:var(--p1-bg);color:var(--p1)}
+.pri-2{background:var(--p2-bg);color:var(--p2)}
+.pri-3{background:var(--p3-bg);color:var(--p3)}
+.pri-4{background:var(--p4-bg);color:var(--p4)}
+.pri-5{background:var(--p5-bg);color:var(--p5)}
+.name-main{font-weight:600;font-size:13px;line-height:1.35}
+.name-en{font-family:'Crimson Pro',serif;font-size:11.5px;color:var(--text-3);font-style:italic;display:block;margin-top:1px}
+.cat-tag{font-size:11px;color:var(--text-2);white-space:nowrap}
+.dots{display:flex;gap:3px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--dot-on)}
+.dot.off{background:var(--dot-off)}
+.q-cell{font-variant-numeric:tabular-nums;font-size:12px;color:var(--text-2);white-space:nowrap}
+.acc-tag{font-size:11px;padding:1px 6px;border-radius:3px;white-space:nowrap}
+.acc-open{background:#dff0e8;color:#2a6e4a}
+.acc-paper{background:#e3eef7;color:#3a6a8e}
+.acc-academic{background:#f0eadf;color:#7a6530}
+.acc-commercial{background:#f0e4e4;color:#8a4040}
+.acc-strict{background:#eddde0;color:#7a2a3a}
+.acc-pro{background:#eae4ee;color:#5a3a6a}
+.acc-na{background:var(--p5-bg);color:var(--p5)}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .acc-open{background:#1a2e22;color:#6abb8e}
+  :root:not([data-theme="light"]) .acc-paper{background:#1a2430;color:#7eaad0}
+  :root:not([data-theme="light"]) .acc-academic{background:#2a2418;color:#c0a050}
+  :root:not([data-theme="light"]) .acc-commercial{background:#2e1e1e;color:#d08080}
+  :root:not([data-theme="light"]) .acc-strict{background:#2e1a20;color:#d06a7a}
+  :root:not([data-theme="light"]) .acc-pro{background:#261e2e;color:#a07ab0}
+  :root:not([data-theme="light"]) .acc-na{background:#252320;color:#787470}
+}
+:root[data-theme="dark"] .acc-open{background:#1a2e22;color:#6abb8e}
+:root[data-theme="dark"] .acc-paper{background:#1a2430;color:#7eaad0}
+:root[data-theme="dark"] .acc-academic{background:#2a2418;color:#c0a050}
+:root[data-theme="dark"] .acc-commercial{background:#2e1e1e;color:#d08080}
+:root[data-theme="dark"] .acc-strict{background:#2e1a20;color:#d06a7a}
+:root[data-theme="dark"] .acc-pro{background:#261e2e;color:#a07ab0}
+:root[data-theme="dark"] .acc-na{background:#252320;color:#787470}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .st-full{background:#1a2e22;color:#6abb8e}
+  :root:not([data-theme="light"]) .st-risk{background:#2e2418;color:#d4a44e}
+  :root:not([data-theme="light"]) .st-partial{background:#2a2418;color:#c0a050}
+  :root:not([data-theme="light"]) .st-struct{background:#1a2430;color:#7eaad0}
+  :root:not([data-theme="light"]) .st-framework{background:#252320;color:#787470}
+}
+:root[data-theme="dark"] .st-full{background:#1a2e22;color:#6abb8e}
+:root[data-theme="dark"] .st-risk{background:#2e2418;color:#d4a44e}
+:root[data-theme="dark"] .st-partial{background:#2a2418;color:#c0a050}
+:root[data-theme="dark"] .st-struct{background:#1a2430;color:#7eaad0}
+:root[data-theme="dark"] .st-framework{background:#252320;color:#787470}
+.cn-tag{font-size:11px;white-space:nowrap}
+.cn-yes{color:var(--accent-text);font-weight:500}
+.cn-norm{color:var(--accent-text);font-weight:600}
+.cn-native{color:var(--p2);font-weight:600}
+.cn-maybe{color:var(--text-2)}
+.cn-no{color:var(--text-3)}
+.link-cell{white-space:nowrap}
+.link-cell a{color:var(--accent-text);text-decoration:none;font-size:12px}
+.link-cell a:hover{text-decoration:underline}
+.cr-text{font-size:11.5px;color:var(--text-2);line-height:1.5;max-width:220px}
+.note-cell{font-size:11.5px;color:var(--text-2);max-width:160px;line-height:1.45}
+.src-cell{font-size:11.5px;white-space:nowrap}
+.src-cell a{color:var(--accent-text);text-decoration:none;font-size:11px;display:inline-flex;align-items:center;gap:3px}
+.src-cell a:hover{text-decoration:underline}
+.src-cell a::after{content:'↗';font-size:9px;opacity:.5}
+.empty-row{text-align:center;padding:32px;color:var(--text-3)}
+.legend{margin-top:20px;padding:16px 18px;background:var(--surface);border:1px solid var(--border-light);border-radius:8px}
+.legend h3{font-family:'Crimson Pro',serif;font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-1)}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px 20px;font-size:12px;color:var(--text-2);line-height:1.6}
+.legend-grid dt{font-weight:600;color:var(--text-1)}
+.legend-grid dd{margin:0 0 6px}
+@media(max-width:900px){
+  .wrap{padding:16px 12px 60px}
+  header h1{font-size:22px}
+  table{font-size:12px}
+  th,td{padding:6px 7px}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>人格测评题库收集进度</h1>
+    <p class="sub">基于《人格测评量表大全》调研，按收集优先级排列。优先级综合考量学术认可度、可获取性、自陈式与否。问卷文件统一存放于当前 <code>Questionnaire/</code> 目录下的子文件夹中。</p>
+    <div class="stats-bar" id="stats"></div>
+    <div class="controls" id="controls">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/></svg>
+        <input type="text" id="search" placeholder="搜索名称、英文名、派系...">
+      </div>
+    </div>
+  </header>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="cb-cell">#</th>
+          <th>状态</th>
+          <th class="sortable" data-col="p">优先级<span class="arrow">▼</span></th>
+          <th>问卷名称</th>
+          <th class="sortable" data-col="cat">派系<span class="arrow">▼</span></th>
+          <th class="sortable" data-col="s">认可度<span class="arrow">▼</span></th>
+          <th>题量</th>
+          <th>获取方式</th>
+          <th>版权与许可</th>
+          <th>中文版</th>
+          <th>文件夹</th>
+          <th>数据源</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <h3>优先级说明</h3>
+    <div class="legend-grid">
+      <div><dt><span class="pri pri-1">P1</span> 最优先</dt><dd>金标准(认可度5) + 开放/免费获取，应最先收集</dd></div>
+      <div><dt><span class="pri pri-2">P2</span> 高优先</dt><dd>高认可度(4) + 论文公开或官网免费，题项可从文献提取</dd></div>
+      <div><dt><span class="pri pri-3">P3</span> 中等</dt><dd>高认可度 + 需学术渠道获取，或中等认可度 + 开放</dd></div>
+      <div><dt><span class="pri pri-4">P4</span> 较低</dt><dd>商业授权、专业施测、或较窄应用领域</dd></div>
+      <div><dt><span class="pri pri-5">P5</span> 暂缓</dt><dd>非量表(理论框架/方法论)、认可度低、或极难获取</dd></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS = {
+  trait:'特质论/因素分析',clinical:'临床/病理人格',dark:'黑暗人格/反社会',
+  bio:'气质/生物学',type:'类型学',interpersonal:'人际/依恋',
+  self:'自我/社会认知',positive:'积极心理/品格',ei:'情绪智力',
+  values:'价值观/道德/认知',coping:'正念/应对/SDT',child:'儿童/青少年气质',
+  projective:'投射/非自陈',crosscultural:'跨文化本土',frontier:'新范式/数字化'
+};
+
+const ACC_CLS = {open:'acc-open',paper:'acc-paper',academic:'acc-academic',commercial:'acc-commercial',strict:'acc-strict',pro:'acc-pro',na:'acc-na'};
+const ACC_LABEL = {open:'公域开放',paper:'论文公开',academic:'学术授权',commercial:'商业授权',strict:'严格版权',pro:'专业施测',na:'非量表'};
+
+const ST_CLS = {full:'st-full',risk:'st-risk',partial:'st-partial',struct:'st-struct',framework:'st-framework'};
+const ST_LABEL = {full:'完整题项',risk:'版权风险',partial:'部分题项',struct:'仅结构',framework:'方法论'};
+
+const DATA = [
+// P1 — 金标准 + 开放
+{id:'ipip',n:'IPIP 系列',en:'International Personality Item Pool',cat:'trait',s:5,q:'50/100/300题',p:1,acc:'open',cr:'公共领域(Goldberg)，任何人可自由使用、修改、翻译、再发布',cn:'有',note:'全球最大公共题库；goldberg.com/ipip'},
+{id:'bfi2',n:'BFI / BFI-2',en:'Big Five Inventory',cat:'trait',s:5,q:'BFI-2:60题; BFI-10:10题',p:1,acc:'paper',cr:'免费用于研究(Soto & John)；商用需联系作者',cn:'有',note:'大五短量表首选；题项见原论文'},
+{id:'rses',n:'RSES (Rosenberg自尊量表)',en:'Rosenberg Self-Esteem Scale',cat:'self',s:5,q:'10题',p:1,acc:'open',cr:'公共领域(1965)，可自由使用',cn:'有',note:'自尊研究默认工具；全球验证最充分'},
+{id:'ecr',n:'ECR / ECR-R',en:'Experiences in Close Relationships-Revised',cat:'interpersonal',s:5,q:'36题',p:1,acc:'open',cr:'免费(Fraley)；作者网站提供题项与计分',cn:'有',note:'成人依恋标准量表；fraley.illinois.edu'},
+{id:'npi',n:'NPI / NPI-16',en:'Narcissistic Personality Inventory',cat:'dark',s:5,q:'NPI-40:40对; NPI-16:16对',p:1,acc:'paper',cr:'原论文公开(Raskin & Hall 1979)；学术免费',cn:'有',note:'亚临床自恋经典工具；迫选格式'},
+{id:'via',n:'VIA-IS / VIA-IS-R',en:'VIA Inventory of Strengths',cat:'positive',s:5,q:'240题(修订版192题)',p:1,acc:'open',cr:'免费在线施测(viacharacter.org)；学术使用免费',cn:'有',note:'积极心理学核心工具；官网免费测评'},
+{id:'rotter',n:'Rotter I-E量表',en:'Locus of Control Scale',cat:'self',s:5,q:'29题(含6填充)',p:1,acc:'paper',cr:'经典公开(1966)；原论文含全部题项',cn:'有',note:'控制源奠基性量表'},
+{id:'svs',n:'SVS / PVQ-RR',en:'Schwartz Values Survey',cat:'values',s:5,q:'57题',p:1,acc:'academic',cr:'学术免费(Schwartz)；需联系作者获取最新PVQ-RR',cn:'有',note:'跨文化价值观金标准；80+国家验证'},
+
+// P2 — 高认可 + 论文公开/官网免费
+{id:'hexaco',n:'HEXACO-PI-R',en:'HEXACO Personality Inventory',cat:'trait',s:4,q:'全版200; 半版100; 60题',p:2,acc:'open',cr:'官网免费(hexaco.org)；可自由用于研究',cn:'有',note:'六因素模型；官网提供多语言版本'},
+{id:'pid5',n:'PID-5',en:'Personality Inventory for DSM-5',cat:'clinical',s:4,q:'全版220; 简版25题',p:2,acc:'open',cr:'APA官方发布，免费下载(psychiatry.org)',cn:'有',note:'DSM-5替代模型官方工具；APA网站可下载'},
+{id:'bisbas',n:'BIS/BAS量表',en:'BIS/BAS Scales',cat:'bio',s:4,q:'20题',p:2,acc:'paper',cr:'原论文公开(Carver & White 1994)；学术免费',cn:'有',note:'强化敏感性理论操作化；题项见原文'},
+{id:'gse',n:'GSE (一般自我效能感)',en:'General Self-Efficacy Scale',cat:'self',s:4,q:'10题',p:2,acc:'open',cr:'免费多语言(Schwarzer)；33+语言版本在线可得',cn:'有',note:'官网提供中文版(userpage.fu-berlin.de/health/selfscal.htm)'},
+{id:'sd3',n:'SD3 (短版黑暗三联征)',en:'Short Dark Triad',cat:'dark',s:4,q:'27题',p:2,acc:'paper',cr:'原论文公开(Jones & Paulhus 2014)；学术免费',cn:'有',note:'黑暗三联征最常用简版'},
+{id:'machiv',n:'MACH-IV',en:'Machiavellianism Scale',cat:'dark',s:4,q:'20题',p:2,acc:'paper',cr:'经典公开(Christie & Geis 1970)；原书含题项',cn:'有',note:'马基雅维利主义奠基量表'},
+{id:'pni',n:'PNI',en:'Pathological Narcissism Inventory',cat:'dark',s:4,q:'52题',p:2,acc:'paper',cr:'原论文公开(Pincus等 2009)；学术免费',cn:'有',note:'整合自大型与脆弱型自恋'},
+{id:'aq',n:'Buss-Perry AQ',en:'Aggression Questionnaire',cat:'dark',s:4,q:'29题',p:2,acc:'paper',cr:'原论文公开(Buss & Perry 1992)；学术免费',cn:'有',note:'攻击性标准量表；跨文化验证广泛'},
+{id:'sssv',n:'SSS-V / BSSS',en:'Sensation Seeking Scale',cat:'bio',s:4,q:'SSS-V:40题; BSSS:8题',p:2,acc:'paper',cr:'原论文公开(Zuckerman 1978)；学术免费',cn:'有',note:'感觉寻求经典工具；与生物学关联密切'},
+{id:'tas20',n:'TAS-20',en:'Toronto Alexithymia Scale-20',cat:'ei',s:4,q:'20题',p:2,acc:'paper',cr:'原论文公开(Bagby等 1994)；学术免费',cn:'有',note:'述情障碍标准工具'},
+{id:'mfq',n:'MFQ',en:'Moral Foundations Questionnaire',cat:'values',s:4,q:'30题',p:2,acc:'open',cr:'免费(moralfoundations.org)；在线可施测',cn:'有',note:'道德基础理论操作化；官网开放'},
+{id:'nfc',n:'NFC',en:'Need for Cognition Scale',cat:'values',s:4,q:'18题',p:2,acc:'paper',cr:'原论文公开(Cacioppo & Petty 1982)；学术免费',cn:'有',note:'认知需求经典量表；说服研究标准变量'},
+{id:'mps',n:'MPS (完美主义)',en:'Multidimensional Perfectionism Scale',cat:'values',s:4,q:'H&F:45题; Frost:35题',p:2,acc:'paper',cr:'原论文公开(两版1990-91)；学术免费',cn:'有',note:'两个互补版本；临床与成就研究标准'},
+{id:'grits',n:'Grit-S',en:'Short Grit Scale',cat:'positive',s:4,q:'Grit-S:8题; Grit-O:12题',p:2,acc:'paper',cr:'原论文公开(Duckworth & Quinn 2009)；学术免费',cn:'有',note:'坚毅量表；与尽责性重叠争议'},
+{id:'briefcope',n:'Brief-COPE',en:'Brief COPE',cat:'coping',s:4,q:'28题',p:2,acc:'paper',cr:'原论文公开(Carver 1997)；学术免费',cn:'有',note:'应对策略最常用简版；14策略'},
+{id:'ffmq',n:'FFMQ',en:'Five Facet Mindfulness Questionnaire',cat:'coping',s:4,q:'39题',p:2,acc:'paper',cr:'原论文公开(Baer等 2006)；学术免费',cn:'有',note:'正念特质多维度标准工具'},
+{id:'maas',n:'MAAS',en:'Mindful Attention Awareness Scale',cat:'coping',s:4,q:'15题',p:2,acc:'paper',cr:'原论文公开(Brown & Ryan 2003)；学术免费',cn:'有',note:'正念单维度量表；与FFMQ互补'},
+{id:'teique',n:'TEIQue / TEIQue-SF',en:'Trait Emotional Intelligence Questionnaire',cat:'ei',s:4,q:'全版153; 简版30题',p:2,acc:'academic',cr:'学术免费(Petrides)；需在官网注册下载',cn:'有',note:'特质EI学术量表；全版免费供研究'},
+{id:'cdrisc',n:'CD-RISC / CD-RISC-10',en:'Connor-Davidson Resilience Scale',cat:'positive',s:4,q:'25题; 10题',p:2,acc:'academic',cr:'学术使用需授权(cd-risc.com)；作者审批后免费',cn:'有',note:'韧性/复原力研究最广泛量表'},
+{id:'pwb',n:'PWB',en:'Psychological Well-Being Scales',cat:'positive',s:4,q:'84/54/42/18题',p:2,acc:'academic',cr:'学术可用(Ryff)；多个长度版本',cn:'有',note:'幸福论取向代表量表'},
+{id:'bpns',n:'BPNS',en:'Basic Psychological Needs Scale',cat:'coping',s:4,q:'21题',p:2,acc:'academic',cr:'学术免费(Deci & Ryan)；SDT官网可获取',cn:'有',note:'自我决定理论核心量表'},
+{id:'wcq',n:'WCQ',en:'Ways of Coping Questionnaire',cat:'coping',s:4,q:'66题',p:2,acc:'academic',cr:'学术可用(Folkman & Lazarus 1988)',cn:'有',note:'应对研究奠基工具；8种应对方式'},
+{id:'epq',n:'EPQ / EPQ-R',en:'Eysenck Personality Questionnaire',cat:'trait',s:4,q:'48–100题',p:2,acc:'academic',cr:'有中文修订版(龚耀先)；全国常模完备',cn:'有(常模)',note:'中国心理学界广泛使用；生物学人格模型'},
+{id:'tcir',n:'TCI-R',en:'Temperament and Character Inventory-Revised',cat:'bio',s:4,q:'TCI-R:240题; 短版140题',p:2,acc:'academic',cr:'学术可用(Cloninger)；部分版本需授权',cn:'有',note:'整合遗传学与心理学；精神医学常用'},
+{id:'ias',n:'IAS',en:'Interpersonal Adjective Scales',cat:'interpersonal',s:4,q:'64个形容词',p:2,acc:'academic',cr:'学术可用(Wiggins 1995)',cn:'可能有',note:'人际环形模型经典工具'},
+
+// P3 — 高认可+商业, 中认可+开放, 或特殊重要工具
+{id:'neo',n:'NEO-PI-R / NEO-PI-3',en:'NEO Personality Inventory',cat:'trait',s:5,q:'240题(简版60题)',p:3,acc:'commercial',cr:'PAR Inc.版权；商业授权使用；购买手册含题项',cn:'有',note:'大五金标准；PAR出版社'},
+{id:'mmpi2',n:'MMPI-2',en:'Minnesota Multiphasic Personality Inventory-2',cat:'clinical',s:5,q:'567题',p:3,acc:'strict',cr:'明尼苏达大学版权；Pearson发行；严格商业授权',cn:'有(常模)',note:'临床人格评估统治性工具；65+国家使用'},
+{id:'mmpirf',n:'MMPI-2-RF / MMPI-3',en:'MMPI-2 Restructured Form / MMPI-3',cat:'clinical',s:5,q:'RF:338; MMPI-3:335题',p:3,acc:'strict',cr:'同MMPI-2；明尼苏达大学/Pearson严格授权',cn:'有',note:'MMPI现代重构版；临床效用提升'},
+{id:'pclr',n:'PCL-R',en:'Psychopathy Checklist-Revised',cat:'dark',s:5,q:'20条(0–2评分)',p:3,acc:'pro',cr:'MHS版权；需专业认证培训方可施测',cn:'有',note:'精神病态金标准；非自陈，需访谈+档案'},
+{id:'16pf',n:'16PF (第五版)',en:'16 Personality Factors',cat:'trait',s:4,q:'185题',p:3,acc:'commercial',cr:'IPAT/Pearson版权；中国版有全国常模',cn:'有(常模)',note:'特质论先驱；人才测评广泛使用'},
+{id:'cpai2',n:'CPAI-2',en:'Chinese Personality Assessment Inventory-2',cat:'crosscultural',s:4,q:'433题',p:3,acc:'academic',cr:'学术使用(张妙清等)；香港中文大学',cn:'原生',note:'最成功的非西方本土人格量表；含"中国人传统性"因子'},
+{id:'iip',n:'IIP-64 / IIP-32',en:'Inventory of Interpersonal Problems',cat:'interpersonal',s:4,q:'IIP-64:64题; IIP-32:32题',p:3,acc:'commercial',cr:'商业出版；部分版本学术可得',cn:'有',note:'人际困扰量表；心理治疗效果评估常用'},
+{id:'pai',n:'PAI',en:'Personality Assessment Inventory',cat:'clinical',s:4,q:'344题',p:3,acc:'commercial',cr:'PAR Inc.版权；商业授权',cn:'有',note:'临床人格全面评估；无条目重叠'},
+{id:'mcmi',n:'MCMI-IV',en:'Millon Clinical Multiaxial Inventory-IV',cat:'clinical',s:4,q:'195题',p:3,acc:'commercial',cr:'Pearson版权；需购买授权',cn:'有',note:'人格障碍专用；与DSM-5对应'},
+{id:'psycap',n:'PsyCap / PCQ',en:'Psychological Capital Questionnaire',cat:'positive',s:4,q:'PCQ-24:24题; PCQ-12:12题',p:3,acc:'commercial',cr:'Mind Garden版权；需购买授权',cn:'有',note:'积极组织行为学核心(HERO)'},
+{id:'dirtydozen',n:'Dirty Dozen',en:'Dirty Dozen Dark Triad',cat:'dark',s:3,q:'12题',p:3,acc:'paper',cr:'原论文公开(Jonason & Webster 2010)',cn:'有',note:'极简黑暗三联征；题量少信度有限'},
+{id:'narq',n:'NARQ',en:'Narcissistic Admiration and Rivalry Questionnaire',cat:'dark',s:3,q:'18题(简版6题)',p:3,acc:'paper',cr:'原论文公开(Back等 2013)',cn:'有',note:'自恋钦慕与竞争模型'},
+{id:'brs',n:'BRS',en:'Brief Resilience Scale',cat:'positive',s:3,q:'6题',p:3,acc:'paper',cr:'原论文公开(Smith等 2008)；学术免费',cn:'有',note:'最简复原力量表'},
+{id:'perma',n:'PERMA-Profiler',en:'PERMA Profiler',cat:'positive',s:3,q:'23题',p:3,acc:'paper',cr:'原论文公开(Butler & Kern 2016)',cn:'有',note:'Seligman幸福理论操作化'},
+{id:'rq',n:'RQ',en:'Relationship Questionnaire',cat:'interpersonal',s:3,q:'4段描述+评分',p:3,acc:'paper',cr:'原论文公开(Bartholomew & Horowitz 1991)',cn:'有',note:'最简依恋分类；宜与ECR-R配合'},
+{id:'rstpq',n:'RST-PQ',en:'Reinforcement Sensitivity Theory-PQ',cat:'bio',s:3,q:'65题',p:3,acc:'paper',cr:'原论文公开(Corr & Cooper 2016)',cn:'可能有',note:'修订版RST操作化；比BIS/BAS更精确'},
+{id:'hsp',n:'HSP量表',en:'Highly Sensitive Person Scale',cat:'bio',s:3,q:'27题',p:3,acc:'paper',cr:'原论文公开(Aron & Aron 1997)',cn:'有',note:'感觉加工敏感性；与兰花/蒲公英模型结合'},
+{id:'ds14',n:'DS14',en:'Type D Personality Scale',cat:'bio',s:3,q:'14题',p:3,acc:'paper',cr:'原论文公开(Denollet 2005)；学术免费',cn:'有',note:'D型人格与心血管疾病风险'},
+{id:'levenson',n:'Levenson IPC',en:'Levenson Multidimensional Locus of Control',cat:'self',s:3,q:'24题',p:3,acc:'paper',cr:'原论文公开(Levenson 1981)',cn:'有',note:'三维度控制源；Rotter的拓展'},
+{id:'scc',n:'SCC',en:'Self-Concept Clarity Scale',cat:'self',s:3,q:'12题',p:3,acc:'paper',cr:'原论文公开(Campbell等 1996)',cn:'可能有',note:'自我概念清晰度'},
+{id:'dsq40',n:'DSQ-40',en:'Defense Style Questionnaire',cat:'coping',s:3,q:'40题',p:3,acc:'paper',cr:'原论文公开(Andrews等 1993)',cn:'有',note:'自陈式防御机制；精神分析操作化'},
+{id:'diamonds',n:'DIAMONDS / S8*',en:'DIAMONDS Situational Taxonomy',cat:'frontier',s:3,q:'S8*:8题; 全版32题',p:3,acc:'paper',cr:'原论文公开(Rauthmann等 2014)',cn:'可能有',note:'情境分类框架；含实际量表S8*'},
+{id:'5dc',n:'5DC / CEI-II',en:'Five-Dimensional Curiosity',cat:'values',s:3,q:'5DC:25题; CEI-II:10题',p:3,acc:'paper',cr:'原论文公开(Kashdan等 2018/2009)',cn:'可能有',note:'好奇心多维度量表'},
+{id:'asq',n:'ASQ',en:'Attributional Style Questionnaire',cat:'values',s:3,q:'12情境×3评分',p:3,acc:'paper',cr:'原论文公开(Peterson等 1982)',cn:'有',note:'归因风格/习得性无助操作化'},
+{id:'dappbq',n:'DAPP-BQ',en:'Dimensional Assessment of Personality Pathology',cat:'clinical',s:3,q:'290题',p:3,acc:'academic',cr:'学术可用(Livesley & Jackson 1998)',cn:'可能有',note:'人格病理维度；行为遗传学取向'},
+{id:'snap2',n:'SNAP-2',en:'Schedule for Nonadaptive and Adaptive Personality',cat:'clinical',s:3,q:'390题',p:3,acc:'academic',cr:'学术可用(Clark 2003)',cn:'可能有',note:'正常-异常人格连续谱桥梁'},
+
+// P4 — 商业授权/专业/较窄领域
+{id:'cpi',n:'CPI (修订版)',en:'California Psychological Inventory',cat:'trait',s:4,q:'434题',p:4,acc:'commercial',cr:'CPP版权；商业授权',cn:'有',note:'正常人格社交能力/成熟度'},
+{id:'mmpiad',n:'MMPI-A / MMPI-A-RF',en:'MMPI-Adolescent',cat:'clinical',s:4,q:'MMPI-A:478; A-RF:241题',p:4,acc:'strict',cr:'同MMPI系列；Pearson发行',cn:'有',note:'青少年临床人格评估'},
+{id:'eqi',n:'EQ-i 2.0',en:'Emotional Quotient Inventory 2.0',cat:'ei',s:4,q:'133题',p:4,acc:'commercial',cr:'MHS版权；商业授权；培训需费用',cn:'有',note:'情绪智力最广泛商业量表'},
+{id:'msceit',n:'MSCEIT',en:'Mayer-Salovey-Caruso EI Test',cat:'ei',s:4,q:'141题',p:4,acc:'commercial',cr:'MHS版权；能力测验非自陈',cn:'有',note:'唯一广泛认可的能力型EI测验'},
+{id:'aai',n:'AAI',en:'Adult Attachment Interview',cat:'interpersonal',s:4,q:'约20个半结构化问题',p:4,acc:'pro',cr:'需专业培训(昂贵)；编码认证',cn:'有',note:'成人依恋金标准访谈；施测编码耗时'},
+{id:'eis',n:'EIS (自我同一性)',en:'Ego Identity Status Interview',cat:'self',s:4,q:'半结构化访谈',p:4,acc:'pro',cr:'访谈范式(Marcia 1966)；有对应自陈版本',cn:'有',note:'Erikson同一性理论操作化'},
+{id:'ibqr',n:'IBQ-R',en:'Infant Behavior Questionnaire-Revised',cat:'child',s:4,q:'全版191; 短版91; 极短37题',p:4,acc:'academic',cr:'学术使用(Rothbart)；mary.rothbart.com可获取',cn:'有',note:'3-12月婴儿气质标准；父母报告'},
+{id:'cbq',n:'CBQ',en:"Children's Behavior Questionnaire",cat:'child',s:4,q:'全版195; 短版94; 极短36题',p:4,acc:'academic',cr:'学术使用(Rothbart)；同上可获取',cn:'有',note:'3-7岁儿童气质标准；父母报告'},
+{id:'nyls',n:'NYLS气质维度',en:'New York Longitudinal Study Temperament',cat:'child',s:4,q:'BSQ等多种，题量不一',p:4,acc:'academic',cr:'学术可用(Thomas & Chess 1977)',cn:'有',note:'9维度气质；"拟合优度"概念起源'},
+{id:'rorschach',n:'Rorschach / R-PAS',en:'Rorschach Inkblot Method',cat:'projective',s:4,q:'10张墨迹图',p:4,acc:'pro',cr:'R-PAS编码系统需培训；墨迹图本身公开',cn:'有',note:'标志性投射工具；R-PAS提升标准化'},
+{id:'epps',n:'EPPS',en:'Edwards Personal Preference Schedule',cat:'trait',s:3,q:'225对迫选',p:4,acc:'commercial',cr:'商业出版',cn:'有',note:'Murray需求理论；迫选格式'},
+{id:'srp4',n:'SRP-4 / SRP-SF',en:'Self-Report Psychopathy Scale-4',cat:'dark',s:3,q:'全版64; 简版29题',p:4,acc:'academic',cr:'学术可用(Paulhus等 2016)',cn:'可能有',note:'PCL-R自陈对应版'},
+{id:'ppir',n:'PPI-R',en:'Psychopathic Personality Inventory-Revised',cat:'dark',s:3,q:'154题',p:4,acc:'commercial',cr:'商业出版(Lilienfeld & Widows 2005)',cn:'可能有',note:'区分精神病态适应性/非适应性成分'},
+{id:'borrti',n:'BORRTI',en:'Bell Object Relations & Reality Testing Inventory',cat:'interpersonal',s:3,q:'90题',p:4,acc:'commercial',cr:'商业出版(Bell 1995)',cn:'可能有',note:'客体关系与现实检验；精神分析取向'},
+{id:'tscs2',n:'TSCS-2',en:'Tennessee Self-Concept Scale-2',cat:'self',s:3,q:'82题',p:4,acc:'commercial',cr:'商业出版(Fitts & Warren 2003)',cn:'有',note:'多维度自我概念；有中文修订'},
+{id:'clifton',n:'CliftonStrengths',en:'CliftonStrengths (StrengthsFinder)',cat:'positive',s:3,q:'177对限时迫选',p:4,acc:'strict',cr:'Gallup严格版权；需购买评估码(约$50/人)',cn:'有',note:'3000万+人完成；独立学术验证有限'},
+{id:'rvs',n:'RVS',en:'Rokeach Value Survey',cat:'values',s:3,q:'36个价值排序',p:4,acc:'paper',cr:'经典公开(Rokeach 1973)',cn:'有',note:'价值观先驱；排序法不便统计'},
+{id:'risb',n:'RISB',en:'Rotter Incomplete Sentences Blank',cat:'projective',s:3,q:'40个未完成句子',p:4,acc:'commercial',cr:'商业出版；Pearson发行',cn:'有',note:'填句测验中标准化最高版本'},
+{id:'repgrid',n:'Rep Grid',en:'Repertory Grid Technique',cat:'projective',s:3,q:'个体化(无固定)',p:4,acc:'academic',cr:'方法论(Kelly 1955)；各实施方案免费',cn:'有',note:'极度个体化；每人量表独一无二'},
+{id:'tat',n:'TAT',en:'Thematic Apperception Test',cat:'projective',s:3,q:'全套31张选约20张',p:4,acc:'pro',cr:'Harvard University Press；图片需购买',cn:'有',note:'投射测试；编故事法；耗时高'},
+{id:'sapi',n:'SAPI',en:'South African Personality Inventory',cat:'crosscultural',s:3,q:'146+题(发展中)',p:4,acc:'academic',cr:'学术项目(Nel等 2012+)；仍在发展',cn:'无',note:'南非11种语言本土人格；Ubuntu哲学'},
+{id:'pup',n:'PUP',en:'Panukat ng Ugali at Pagkatao',cat:'crosscultural',s:3,q:'160题',p:4,acc:'academic',cr:'学术(Enriquez/PPRTH)',cn:'无',note:'菲律宾本土人格；kapwa概念'},
+{id:'eatqr',n:'EATQ-R',en:'Early Adolescent Temperament Questionnaire-Revised',cat:'child',s:3,q:'65题',p:4,acc:'academic',cr:'学术使用(Ellis & Rothbart 2001)',cn:'可能有',note:'青少年气质(9-15岁)；Rothbart体系'},
+{id:'eas',n:'EAS',en:'EAS Temperament Survey',cat:'child',s:3,q:'20题',p:4,acc:'academic',cr:'学术可用(Buss & Plomin 1984)',cn:'可能有',note:'气质遗传理论；简短易用'},
+{id:'caq',n:'CAQ',en:'California Adult Q-Sort',cat:'frontier',s:3,q:'100张描述卡',p:4,acc:'pro',cr:'学术可用(Block 2008)；需培训',cn:'可能有',note:'Q分类法；强制分布排序'},
+{id:'mbti',n:'MBTI',en:'Myers-Briggs Type Indicator',cat:'type',s:3,q:'Form M:93题',p:4,acc:'strict',cr:'The Myers-Briggs Company(原CPP)严格版权；认证需~$2000+',cn:'有',note:'全球知名度最高但学术认可低；重测一致性~50%'},
+
+// P5 — 暂缓：低认可度 / 严格商业+低学术价值 / 非量表
+{id:'rheti',n:'RHETI (九型人格)',en:'Riso-Hudson Enneagram Type Indicator',cat:'type',s:2,q:'144题',p:5,acc:'commercial',cr:'商业出版(Riso & Hudson 1999)；需购买',cn:'有',note:'科学验证严重不足；因子结构不稳定'},
+{id:'disc',n:'DISC',en:'DISC Assessment',cat:'type',s:2,q:'24–80题(版本不一)',p:5,acc:'commercial',cr:'多家出版商各自版权；版本间不可互换',cn:'有',note:'组织培训常见但缺乏独立学术验证'},
+{id:'htp',n:'HTP / DAP',en:'House-Tree-Person / Draw-A-Person',cat:'projective',s:2,q:'3–4张绘画',p:5,acc:'pro',cr:'技法公开；但作为诊断工具信效度极弱',cn:'有',note:'绘画测试；仅作辅助破冰，不可独立诊断'},
+{id:'triguna',n:'印度三德人格量表',en:'Triguna Scales (VPI/Mysore)',cat:'crosscultural',s:2,q:'题量不一',p:5,acc:'academic',cr:'学术(Wolf/Shilpa & Murthy)',cn:'无',note:'吠陀哲学三维模型；文化极窄'},
+{id:'mexico',n:'墨西哥民族心理量表',en:'Mexican Ethnopsychology Inventory',cat:'crosscultural',s:2,q:'多版本',p:5,acc:'academic',cr:'学术(Díaz-Guerrero 1975+)',cn:'无',note:'拉美本土人格；文化特异'},
+{id:'amaejeong',n:'日本Amae / 韩国Jeong',en:'Amae (Doi) / Jeong (Choi)',cat:'crosscultural',s:2,q:'部分有操作化量表',p:5,acc:'na',cr:'概念框架；部分有量表但缺乏统一版本',cn:'不适用',note:'东亚关系性构念；无标准化统一量表'},
+{id:'network',n:'人格网络方法',en:'Network Approach to Personality',cat:'frontier',s:3,q:'非量表——分析框架',p:5,acc:'na',cr:'方法论，非特定工具',cn:'不适用',note:'挑战潜在特质本体论；是分析方法不是量表'},
+{id:'wtt',n:'整体特质理论(WTT)',en:'Whole Trait Theory',cat:'frontier',s:3,q:'理论框架',p:5,acc:'na',cr:'理论(Fleeson & Jayawickreme 2015)',cn:'不适用',note:'整合特质与社会认知；需结合ESM使用'},
+{id:'caps',n:'CAPS / If-Then签名',en:'Cognitive-Affective Processing System',cat:'frontier',s:4,q:'理论+实验范式',p:5,acc:'na',cr:'理论框架(Mischel & Shoda 1995)',cn:'不适用',note:'情境-行为条件概率模式；难以大规模测量'},
+{id:'sapa',n:'SAPA项目',en:'Synthetic Aperture Personality Assessment',cat:'frontier',s:3,q:'自适应约100+题',p:5,acc:'na',cr:'开放科学项目(Revelle/Northwestern)；使用IPIP题库',cn:'不适用',note:'IRT自适应测试平台；题库基于IPIP'},
+{id:'digital',n:'数字足迹人格预测',en:'Digital Footprint Personality Prediction',cat:'frontier',s:3,q:'非问卷——行为数据',p:5,acc:'na',cr:'ML方法(Kosinski等 2013+)；非传统量表',cn:'不适用',note:'从社交媒体推断人格；伦理争议大'},
+{id:'openvocab',n:'开放词汇法',en:'Open Vocabulary Approach',cat:'frontier',s:3,q:'非问卷——自由文本',p:5,acc:'na',cr:'NLP方法(Schwartz等 2013)',cn:'不适用',note:'数据驱动语言标记发现'},
+{id:'esm',n:'经验采样法(ESM/EMA)',en:'Experience Sampling Method',cat:'frontier',s:3,q:'每天多次短问卷',p:5,acc:'na',cr:'方法论(Csikszentmihalyi 1977+)',cn:'不适用',note:'测人格状态瞬时变动；方法非量表'}
+];
+
+const SOURCES = {
+ipip:['IPIP 官网','https://ipip.ori.org'],
+bfi2:['DOI: JPSP','https://doi.org/10.1037/pspp0000096'],
+rses:['Scholar','https://scholar.google.com/scholar?q=%22society+and+the+adolescent+self-image%22+rosenberg+1965'],
+ecr:['Fraley Lab','https://labs.psychology.illinois.edu/~rcfraley/measures/ecrr.htm'],
+npi:['DOI: JPSP','https://doi.org/10.1037/0022-3514.54.5.890'],
+via:['VIA 官网','https://www.viacharacter.org'],
+rotter:['DOI: Psychol Mono','https://doi.org/10.1037/h0092976'],
+svs:['Scholar','https://scholar.google.com/scholar?q=schwartz+1992+%22universals+in+the+content+and+structure+of+values%22'],
+hexaco:['HEXACO 官网','https://hexaco.org'],
+pid5:['APA 官网','https://www.psychiatry.org/psychiatrists/practice/dsm/educational-resources/assessment-measures'],
+bisbas:['DOI: JPSP','https://doi.org/10.1037/0022-3514.67.2.319'],
+gse:['Schwarzer 官网','https://userpage.fu-berlin.de/health/selfscal.htm'],
+sd3:['DOI: Assessment','https://doi.org/10.1177/1073191113514105'],
+machiv:['Scholar','https://scholar.google.com/scholar?q=%22studies+in+machiavellianism%22+christie+geis+1970'],
+pni:['DOI: Psychol Assess','https://doi.org/10.1037/a0016530'],
+aq:['DOI: JPSP','https://doi.org/10.1037/0022-3514.63.3.452'],
+sssv:['Scholar','https://scholar.google.com/scholar?q=zuckerman+1994+%22behavioral+expressions+and+biosocial+bases+of+sensation+seeking%22'],
+tas20:['DOI: J Psychosom','https://doi.org/10.1016/0022-3999(94)90005-1'],
+mfq:['MoralFoundations','https://moralfoundations.org'],
+nfc:['Scholar','https://scholar.google.com/scholar?q=cacioppo+petty+1982+%22need+for+cognition%22'],
+mps:['Scholar','https://scholar.google.com/scholar?q=hewitt+flett+1991+%22multidimensional+perfectionism+scale%22'],
+grits:['Scholar','https://scholar.google.com/scholar?q=duckworth+quinn+2009+%22short+grit+scale%22'],
+briefcope:['Scholar','https://scholar.google.com/scholar?q=carver+1997+%22brief+cope%22'],
+ffmq:['DOI: Assessment','https://doi.org/10.1177/1073191105283504'],
+maas:['DOI: JPSP','https://doi.org/10.1037/0022-3514.84.4.822'],
+teique:['TEIQue 官网','https://psychometriclab.com'],
+cdrisc:['CD-RISC 官网','https://www.cd-risc.com'],
+pwb:['DOI: JPSP','https://doi.org/10.1037/0022-3514.57.6.1069'],
+bpns:['SDT 官网','https://selfdeterminationtheory.org'],
+wcq:['Scholar','https://scholar.google.com/scholar?q=folkman+lazarus+1988+%22ways+of+coping+questionnaire%22'],
+epq:['Scholar','https://scholar.google.com/scholar?q=eysenck+1985+%22revised+eysenck+personality+questionnaire%22+EPQ-R'],
+tcir:['Scholar','https://scholar.google.com/scholar?q=cloninger+1993+%22temperament+and+character+inventory%22'],
+ias:['Scholar','https://scholar.google.com/scholar?q=wiggins+1995+%22interpersonal+adjective+scales%22'],
+neo:['PAR','https://www.parinc.com'],
+mmpi2:['Pearson','https://www.pearsonassessments.com'],
+mmpirf:['Pearson','https://www.pearsonassessments.com'],
+pclr:['MHS','https://www.mhs.com'],
+'16pf':['Pearson','https://www.pearsonassessments.com'],
+cpai2:['Scholar','https://scholar.google.com/scholar?q=cheung+2001+%22chinese+personality+assessment+inventory%22+CPAI-2'],
+iip:['Scholar','https://scholar.google.com/scholar?q=horowitz+1988+%22inventory+of+interpersonal+problems%22'],
+pai:['PAR','https://www.parinc.com'],
+mcmi:['Pearson','https://www.pearsonassessments.com'],
+psycap:['Mind Garden','https://www.mindgarden.com'],
+dirtydozen:['DOI: Psychol Assess','https://doi.org/10.1037/a0019265'],
+narq:['DOI: Psychol Assess','https://doi.org/10.1037/a0028872'],
+brs:['Scholar','https://scholar.google.com/scholar?q=smith+2008+%22brief+resilience+scale%22'],
+perma:['Scholar','https://scholar.google.com/scholar?q=butler+kern+2016+%22PERMA-profiler%22'],
+rq:['DOI: JPSP','https://doi.org/10.1037/0022-3514.61.2.226'],
+rstpq:['Scholar','https://scholar.google.com/scholar?q=corr+cooper+2016+%22reinforcement+sensitivity+theory+personality+questionnaire%22'],
+hsp:['DOI: JPSP','https://doi.org/10.1037/0022-3514.73.2.345'],
+ds14:['DOI: J Psychosom','https://doi.org/10.1016/j.jpsychores.2004.02.007'],
+levenson:['Scholar','https://scholar.google.com/scholar?q=levenson+1981+%22differentiating+among+internality%22+locus+of+control'],
+scc:['DOI: JPSP','https://doi.org/10.1037/0022-3514.70.6.1114'],
+dsq40:['Scholar','https://scholar.google.com/scholar?q=andrews+1993+%22defense+style+questionnaire%22+DSQ-40'],
+diamonds:['Scholar','https://scholar.google.com/scholar?q=rauthmann+2014+%22situational+eight+DIAMONDS%22'],
+'5dc':['Scholar','https://scholar.google.com/scholar?q=kashdan+2018+%22five-dimensional+curiosity%22'],
+asq:['Scholar','https://scholar.google.com/scholar?q=peterson+1982+%22attributional+style+questionnaire%22'],
+dappbq:['Scholar','https://scholar.google.com/scholar?q=livesley+jackson+%22dimensional+assessment+of+personality+pathology%22'],
+snap2:['Scholar','https://scholar.google.com/scholar?q=clark+1993+%22schedule+for+nonadaptive+and+adaptive+personality%22'],
+cpi:['Myers-Briggs Co.','https://www.themyersbriggs.com'],
+mmpiad:['Pearson','https://www.pearsonassessments.com'],
+eqi:['MHS','https://www.mhs.com'],
+msceit:['MHS','https://www.mhs.com'],
+aai:['Scholar','https://scholar.google.com/scholar?q=george+kaplan+main+1985+%22adult+attachment+interview%22'],
+eis:['Scholar','https://scholar.google.com/scholar?q=marcia+1966+%22development+and+validation+of+ego-identity+status%22'],
+ibqr:['Rothbart Lab','https://research.bowdoin.edu/rothbart-temperament-questionnaires/'],
+cbq:['Rothbart Lab','https://research.bowdoin.edu/rothbart-temperament-questionnaires/'],
+nyls:['Scholar','https://scholar.google.com/scholar?q=thomas+chess+1977+%22temperament+and+development%22'],
+rorschach:['R-PAS 官网','https://r-pas.org'],
+epps:['Scholar','https://scholar.google.com/scholar?q=edwards+1959+%22personal+preference+schedule%22'],
+srp4:['Scholar','https://scholar.google.com/scholar?q=paulhus+neumann+hare+%22self-report+psychopathy+scale%22'],
+ppir:['PAR','https://www.parinc.com'],
+borrti:['WPS','https://www.wpspublish.com'],
+tscs2:['WPS','https://www.wpspublish.com'],
+clifton:['Gallup','https://www.gallup.com/cliftonstrengths'],
+rvs:['Scholar','https://scholar.google.com/scholar?q=rokeach+1973+%22the+nature+of+human+values%22'],
+risb:['Pearson','https://www.pearsonassessments.com'],
+repgrid:['Scholar','https://scholar.google.com/scholar?q=kelly+1955+%22psychology+of+personal+constructs%22'],
+tat:['Scholar','https://scholar.google.com/scholar?q=murray+1943+%22thematic+apperception+test%22'],
+sapi:['Scholar','https://scholar.google.com/scholar?q=nel+2012+%22south+african+personality+inventory%22'],
+pup:['Scholar','https://scholar.google.com/scholar?q=enriquez+%22panukat+ng+ugali+at+pagkatao%22'],
+eatqr:['Rothbart Lab','https://research.bowdoin.edu/rothbart-temperament-questionnaires/'],
+eas:['Scholar','https://scholar.google.com/scholar?q=buss+plomin+1984+%22temperament+early+developing+personality+traits%22'],
+caq:['Scholar','https://scholar.google.com/scholar?q=block+2008+%22california+adult+q-sort%22'],
+mbti:['Myers-Briggs 官网','https://www.myersbriggs.org'],
+rheti:['Enneagram Inst.','https://www.enneagraminstitute.com'],
+disc:['Wiley DISC','https://www.discprofile.com'],
+htp:['Scholar','https://scholar.google.com/scholar?q=buck+1948+%22house-tree-person%22+drawing+test'],
+triguna:['Scholar','https://scholar.google.com/scholar?q=%22vedic+personality+inventory%22+triguna'],
+mexico:['Scholar','https://scholar.google.com/scholar?q=diaz-guerrero+%22psychology+of+the+mexican%22'],
+amaejeong:['Scholar','https://scholar.google.com/scholar?q=doi+1971+%22anatomy+of+dependence%22+amae'],
+network:['Scholar','https://scholar.google.com/scholar?q=cramer+2012+%22dimensions+of+normal+personality+as+networks%22'],
+wtt:['Scholar','https://scholar.google.com/scholar?q=fleeson+jayawickreme+2015+%22whole+trait+theory%22'],
+caps:['DOI: Psychol Rev','https://doi.org/10.1037/0033-295X.102.2.246'],
+sapa:['SAPA 官网','https://sapa-project.org'],
+digital:['DOI: PNAS','https://doi.org/10.1073/pnas.1218772110'],
+openvocab:['Scholar','https://scholar.google.com/scholar?q=schwartz+2013+%22personality+recognition+and+the+power+of+language%22'],
+esm:['Scholar','https://scholar.google.com/scholar?q=csikszentmihalyi+%22experience+sampling+method%22']
+};
+
+const STATUS = {
+ipip:'full',bfi2:'full',rses:'full',ecr:'full',npi:'full',rotter:'full',svs:'full',
+hexaco:'full',pid5:'full',bisbas:'full',gse:'full',sd3:'full',machiv:'full',pni:'full',
+aq:'full',sssv:'full',mfq:'full',nfc:'full',mps:'full',grits:'full',briefcope:'full',
+ffmq:'full',maas:'full',pwb:'full',bpns:'full',epq:'full',dirtydozen:'full',narq:'full',
+brs:'full',perma:'full',rq:'full',rstpq:'full',hsp:'full',ds14:'full',levenson:'full',
+scc:'full',dsq40:'full',diamonds:'full','5dc':'full',asq:'full',rvs:'full',eas:'full',
+wcq:'full',ibqr:'full',cbq:'full',eatqr:'full',
+tas20:'risk',teique:'risk',cdrisc:'risk',
+ias:'partial',via:'partial',srp4:'partial',
+tcir:'struct',neo:'struct',mmpi2:'struct',mmpirf:'struct',
+pclr:'struct','16pf':'struct',cpai2:'struct',iip:'struct',pai:'struct',mcmi:'struct',
+psycap:'struct',dappbq:'struct',snap2:'struct',cpi:'struct',mmpiad:'struct',eqi:'struct',
+msceit:'struct',aai:'struct',eis:'struct',nyls:'struct',
+rorschach:'struct',epps:'struct',ppir:'struct',borrti:'struct',tscs2:'struct',
+clifton:'struct',risb:'struct',repgrid:'struct',tat:'struct',sapi:'struct',pup:'struct',
+caq:'struct',mbti:'struct',rheti:'struct',disc:'struct',htp:'struct',
+triguna:'struct',mexico:'struct',
+amaejeong:'framework',network:'framework',wtt:'framework',caps:'framework',
+sapa:'framework',digital:'framework',openvocab:'framework',esm:'framework'
+};
+
+function stOf(id) { return STATUS[id] || 'struct'; }
+function stTag(id) { const s = stOf(id); return `<span class="st-tag ${ST_CLS[s]}">${ST_LABEL[s]}</span>`; }
+
+let filterPri = 0;
+let filterCat = '';
+let filterStatus = '';
+let searchQuery = '';
+let sortCol = 'p';
+let sortAsc = true;
+
+function dots(s) {
+  return Array.from({length:5}, (_,i) => `<span class="dot ${i<s?'on':'off'}"></span>`).join('');
+}
+function priTag(p) {
+  return `<span class="pri pri-${p}">P${p}</span>`;
+}
+function accTag(a) {
+  return `<span class="acc-tag ${ACC_CLS[a]||'acc-na'}">${ACC_LABEL[a]||a}</span>`;
+}
+function cnTag(cn) {
+  if (!cn || cn === '不适用') return `<span class="cn-tag cn-no">—</span>`;
+  if (cn === '有(常模)') return `<span class="cn-tag cn-norm">有(常模)</span>`;
+  if (cn === '原生') return `<span class="cn-tag cn-native">原生</span>`;
+  if (cn === '有') return `<span class="cn-tag cn-yes">有</span>`;
+  if (cn === '多语') return `<span class="cn-tag cn-yes">多语言</span>`;
+  if (cn === '可能有') return `<span class="cn-tag cn-maybe">可能有</span>`;
+  if (cn === '无') return `<span class="cn-tag cn-no">无</span>`;
+  return `<span class="cn-tag cn-maybe">${cn}</span>`;
+}
+
+function filtered() {
+  let items = DATA.slice();
+  if (filterPri) items = items.filter(d => d.p === filterPri);
+  if (filterCat) items = items.filter(d => d.cat === filterCat);
+  if (filterStatus) items = items.filter(d => stOf(d.id) === filterStatus);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    items = items.filter(d => (d.n+d.en+d.cr+d.note+(CATS[d.cat]||'')).toLowerCase().includes(q));
+  }
+  items.sort((a,b) => {
+    let va, vb;
+    if (sortCol === 'p') { va = a.p; vb = b.p; }
+    else if (sortCol === 's') { va = a.s; vb = b.s; }
+    else if (sortCol === 'cat') { va = CATS[a.cat]||''; vb = CATS[b.cat]||''; }
+    else { va = a.p; vb = b.p; }
+    if (sortCol === 'cat') {
+      return sortAsc ? va.localeCompare(vb,'zh') : vb.localeCompare(va,'zh');
+    }
+    if (sortCol === 's') return sortAsc ? vb - va : va - vb;
+    return sortAsc ? va - vb : vb - va;
+  });
+  return items;
+}
+
+function renderStats() {
+  const total = DATA.length;
+  const counts = {full:0,risk:0,partial:0,struct:0,framework:0};
+  DATA.forEach(d => counts[stOf(d.id)]++);
+  const usable = counts.full;
+  const pct = total ? Math.round(usable/total*100) : 0;
+  let html = `<span class="stat">总计 <b>${total}</b></span>`;
+  html += `<span class="stat">完整可用 <b>${usable}</b> <span class="pct">(${pct}%)</span></span>`;
+  html += `<div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+  html += `<span class="stat"><span class="st-tag st-full">${ST_LABEL.full}</span> <b>${counts.full}</b></span>`;
+  html += `<span class="stat"><span class="st-tag st-risk">${ST_LABEL.risk}</span> <b>${counts.risk}</b></span>`;
+  html += `<span class="stat"><span class="st-tag st-partial">${ST_LABEL.partial}</span> <b>${counts.partial}</b></span>`;
+  html += `<span class="stat"><span class="st-tag st-struct">${ST_LABEL.struct}</span> <b>${counts.struct}</b></span>`;
+  html += `<span class="stat"><span class="st-tag st-framework">${ST_LABEL.framework}</span> <b>${counts.framework}</b></span>`;
+  document.getElementById('stats').innerHTML = html;
+}
+
+function renderControls() {
+  const el = document.getElementById('controls');
+  const cats = [...new Set(DATA.map(d=>d.cat))];
+  let html = `<div class="search-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16" y2="16"/></svg><input type="text" id="search" placeholder="搜索名称、英文名、派系..." value="${searchQuery}"></div>`;
+  html += `<button class="filter-btn ${filterPri===0?'active':''}" onclick="setPri(0)">全部</button>`;
+  for (let p=1;p<=5;p++) html += `<button class="filter-btn ${filterPri===p?'active':''}" onclick="setPri(${p})">P${p}</button>`;
+  html += `<button class="filter-btn ${filterStatus===''?'active':''}" onclick="setStatus('')">不限</button>`;
+  html += `<button class="filter-btn ${filterStatus==='full'?'active':''}" onclick="setStatus('full')">完整题项</button>`;
+  html += `<button class="filter-btn ${filterStatus==='risk'?'active':''}" onclick="setStatus('risk')">版权风险</button>`;
+  html += `<button class="filter-btn ${filterStatus==='partial'?'active':''}" onclick="setStatus('partial')">部分</button>`;
+  html += `<button class="filter-btn ${filterStatus==='struct'?'active':''}" onclick="setStatus('struct')">仅结构</button>`;
+  html += `<button class="filter-btn ${filterStatus==='framework'?'active':''}" onclick="setStatus('framework')">方法论</button>`;
+  el.innerHTML = html;
+  document.getElementById('search').addEventListener('input', function(){ searchQuery = this.value; render(); });
+}
+
+function renderTable() {
+  const items = filtered();
+  const tbody = document.getElementById('tbody');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="12" class="empty-row">没有匹配的量表</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map((d,i) => {
+    const folder = `${d.id}/`;
+    return `<tr>
+      <td class="cb-cell" style="color:var(--text-3);font-size:11px;font-variant-numeric:tabular-nums">${i+1}</td>
+      <td class="st-cell">${stTag(d.id)}</td>
+      <td>${priTag(d.p)}</td>
+      <td><span class="name-main">${d.n}</span><span class="name-en">${d.en}</span></td>
+      <td><span class="cat-tag">${CATS[d.cat]||d.cat}</span></td>
+      <td><div class="dots">${dots(d.s)}</div></td>
+      <td class="q-cell">${d.q}</td>
+      <td>${accTag(d.acc)}</td>
+      <td class="cr-text">${d.cr}</td>
+      <td>${cnTag(d.cn)}</td>
+      <td class="link-cell"><a href="${folder}" title="${folder}">${d.acc==='na'?'—':'📁 '+d.id}</a></td>
+      <td class="src-cell">${(()=>{const s=SOURCES[d.id];return s?'<a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+'</a>':'—';})()}</td>
+    </tr>`;
+  }).join('');
+}
+
+function render() {
+  renderStats();
+  renderTable();
+  document.querySelectorAll('th.sortable').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.col === sortCol);
+    const arrow = th.querySelector('.arrow');
+    if (arrow) arrow.textContent = (th.dataset.col === sortCol && !sortAsc) ? '▲' : '▼';
+  });
+}
+
+function setPri(p) { filterPri = p; renderControls(); render(); }
+function setStatus(s) { filterStatus = s; renderControls(); render(); }
+
+document.querySelectorAll('th.sortable').forEach(th => {
+  th.addEventListener('click', function() {
+    const col = this.dataset.col;
+    if (sortCol === col) sortAsc = !sortAsc;
+    else { sortCol = col; sortAsc = true; }
+    render();
+  });
+});
+
+renderControls();
+render();
+</script>
