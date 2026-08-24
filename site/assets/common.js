@@ -32,13 +32,13 @@ const NAV_ICONS = {
 function buildNav(active){
   const links = [['home','index.html','主页'],['fill','fill.html','填写'],['view','view.html','查看'],['docs','docs.html','综述']];
   const linkHtml = links.map(([k,href,label])=>
-    `<a href="${href}" class="${active===k?'active':''}">${label}</a>`).join('');
+    `<a href="${href}" class="${active===k?'active':''}"${active===k?' aria-current="page"':''}>${label}</a>`).join('');
   return `<div class="nav"><div class="nav-inner">
     <a href="index.html" class="brand"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg></span>人格测评量表库</a>
     <nav class="nav-links">${linkHtml}</nav>
     <div class="nav-spacer"></div>
     <div class="nav-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-      <input type="text" id="navSearch" placeholder="搜索量表…" autocomplete="off"></div>
+      <input type="text" id="navSearch" placeholder="搜索量表…" aria-label="搜索量表" autocomplete="off"></div>
     <button class="theme-btn" onclick="toggleTheme()" title="切换深/浅色" aria-label="切换主题">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
     </button>
