@@ -10,7 +10,7 @@
 - 基于调研文件 `人格测评量表大全.html`（550 行，14/15 大流派、98 个量表）系统整理的**人格测评量表库**。
 - 两部分：
   1. **题库**：98 个量表各一个子目录，内含结构化 Markdown（题项/维度/计分/信效度/版权/中文版）。
-  2. **测评平台** `site/`：HF（Hugging Face）风格多页静态站，用户可浏览题库、在线作答、导出数据、读领域综述。
+  2. **测评平台** `web/`（Astro）：HF（Hugging Face）风格多页站，用户可浏览题库、在线作答、导出数据、读领域综述。
 - 定位反复强调：**不是商用产品**。页面要信息直给、全面、专业（学术 register、引用/心理测量指标前置、表格化），不要营销钩子。
 
 ---
@@ -22,25 +22,30 @@ Questionnaire/
 ├── 人格测评量表大全.html      # 原始调研（综述的事实来源）
 ├── 题库收集进度.html          # tracker：98 量表元数据 + 状态分类（DATA/CATS/SOURCES/STATUS）
 ├── HANDOFF.md                 # 本文件
-├── <98 个量表子目录>/          # 如 ipip/IPIP-50.md, rses/RSES.md ...
-└── site/                      # 部署到 Netlify 的测评平台
-    ├── index.html             # 主页（HF hero + 三列发现区）
-    ├── fill.html              # 问卷填写（对应 HF Models）：hub + ?s=<id> 详情内嵌作答
-    ├── view.html              # 问卷查看（对应 HF Datasets）：全库浏览 + ?s=<id> 详情
-    ├── docs.html              # 领域综述（对应 HF Docs）：左 TOC + 正文 + 滚动高亮
-    └── assets/
-        ├── app.css            # 全站设计系统（HF 风格，靛蓝主色 #4f46e5，暗色主题，字体渲染优化）
-        ├── library.js         # 98 量表元数据（见 §4）
-        ├── scales.js          # 6 个可作答量表的完整题项 + 计分引擎 scoreScaleData()
-        ├── common.js          # mountChrome()/esc()/catDot()/catName() 等共享工具
-        └── docs-content.html  # 综述原始片段（已内联进 docs.html，保留备份）
+├── <98 个量表子目录>/          # 如 ipip/IPIP-50.md, rses/RSES.md ...  ← 题库真源(.md)
+├── .github/workflows/deploy.yml  # CI：构建 web/ 并部署 web/dist 到 Netlify
+└── web/                       # 测评平台（Astro）——**唯一真源，部署到 Netlify**
+    ├── src/pages/index.astro  # 主页（Astro；hero 是真实 WebGL 着色器 React 岛）
+    ├── src/components/Hero.tsx # cult-ui StaticRadialGradient 着色器岛
+    ├── public/
+    │   ├── fill.html          # 问卷填写(=HF Models)：hub + ?s=<id> 内嵌作答（内联 JS 静态页）
+    │   ├── view.html          # 问卷查看(=HF Datasets)：全库浏览 + ?s=<id> 详情
+    │   ├── docs.html          # 领域综述(=HF Docs)：左 TOC + 正文 + 滚动高亮
+    │   └── assets/
+    │       ├── app.css        # 全站设计系统（靛蓝 #4f46e5，暗色主题，字体优化）
+    │       ├── library.js     # 98 量表元数据（见 §4）——**改量表元数据改这里**
+    │       ├── scales.js      # 可作答量表完整题项 + 计分引擎 scoreScaleData()——**加量表改这里**
+    │       └── common.js      # mountChrome()/esc()/catDot() 等共享工具
+    ├── astro.config.mjs       # build.format:'file' → 输出 fill.html/view.html/... 保持 ?s 链接
+    └── package.json           # pnpm（packageManager pin 8.10）；.npmrc 走国内镜像(gitignore)
 ```
 
-路由：详情页用查询参数 `?s=<scaleId>`（纯静态、免构建、Netlify 友好）。
+路由：详情页用查询参数 `?s=<scaleId>`。`build.format:'file'` 让 Astro 输出扁平的 `fill.html` 等，链接与旧站一致。
+> **2026-08-25：旧 `site/` 已退役删除**，全部内容并入 `web/`，`web/` 现为唯一真源。改量表数据 = 改 `web/public/assets/{scales.js,library.js}`。
 
 ---
 
-## 3. site/ 平台要点
+## 3. web/ 平台要点
 
 - **4 页对应 HF 三区 + Docs**：填写=Models（可运行）、查看=Datasets（可浏览）、综述=Docs。
 - 每页 `<head>` 加载 Google Fonts `Source Sans 3`，链 `assets/app.css`。
@@ -94,7 +99,7 @@ Questionnaire/
 ### ⚠️ 三个关键 gotcha
 
 1. **GitHub Actions 自动部署，且已迁到 Astro（2026-08-25）**。Netlify 本身仍未连 Git，由 CI 代跑：`.github/workflows/deploy.yml` 在 push `main`（改动含 `web/**` 或该 workflow）时 **`corepack enable` → `pnpm install` → `pnpm build`（web/）→ `netlify deploy --prod --dir=web/dist`**。**push 到 main 即自动上线。**
-   - ⚠️ **部署源已从 `site/` 切到 `web/`（Astro）**。现在**改 `site/` 不再自动上线**；线上内容来自 `web/`（`web/public/` 是 `site/` 的静态副本 + `web/src/pages/index.astro` 的 Astro 主页）。详见 §9。
+   - ⚠️ **部署源是 `web/`（Astro）**；旧 `site/` 已退役删除。改量表/页面 = 改 `web/`（数据在 `web/public/assets/`）。详见 §9。
    - 依赖两个 GitHub Secret（已设在仓库）：`NETLIFY_AUTH_TOKEN`（本机 netlify 登录 token）、`NETLIFY_SITE_ID`（= 30238098-...982e）。
    - workflow YAML 坑：`run:` 单行命令里别出现"冒号+空格"，会被 YAML 当成 mapping 报错、0s 失败。
    - 手动兜底：`cd web && pnpm build && netlify deploy --prod --dir=web/dist --site=30238098-4430-46d2-bfb5-7ac1239e982e`；或 Actions 页 `workflow_dispatch`。
@@ -129,6 +134,6 @@ Questionnaire/
 ## 9. Astro 迁移（2026-08-25）—— 部署源已切到 web/
 - **动机**：用户要复刻 cult-ui `hero-static-radial-gradient`，纯静态 HTML 只能 CSS 复刻。迁到 Astro 后可用真组件生态。
 - **技术栈**：`web/` = Astro 7 + `@astrojs/react` + React 19 + `@paper-design/shaders-react`（cult-ui 那个 hero 底层的真实 WebGL 着色器 `StaticRadialGradient`）。用 **pnpm**（本机 npm 8.1.4 与 Node 22 不兼容；pnpm 8.10，`packageManager` 已 pin）。本机装依赖走国内镜像 `web/.npmrc`（已 gitignore，不进仓库、不影响 CI）。
-- **结构**：`web/src/pages/index.astro`（主页，hero 是 `web/src/components/Hero.tsx` React 岛 `client:load`，真着色器 + CSS 渐变降级底）；`web/public/{fill,view,docs}.html` + `web/public/assets/*` 是 `site/` 的**静态副本**（lift-and-shift）。`astro.config.mjs` 用 `build.format:'file'` → 输出 `fill.html/view.html/...`，保持 `?s=xxx` 链接不变。
-- ⚠️ **数据现在有两份**：`site/assets/*` 与 `web/public/assets/*`。**线上只认 `web/`**。改数据/量表后必须同步到 `web/public/`（目前手动 `cp`），否则线上不变。**待办**：消除重复（让 Astro 直接从 `../site` 引，或把 `site/` 退役、只留 `web/`）。
+- **结构**：`web/src/pages/index.astro`（主页，hero 是 `web/src/components/Hero.tsx` React 岛 `client:load`，真着色器 + CSS 渐变降级底）；`web/public/{fill,view,docs}.html` + `web/public/assets/*` 是从旧 `site/` lift-and-shift 过来的静态页（内联 JS，未改逻辑）。`astro.config.mjs` 用 `build.format:'file'` → 输出 `fill.html/view.html/...`，保持 `?s=xxx` 链接不变。
+- ✅ **2026-08-25：旧 `site/` 已退役删除，`web/` 为唯一真源**（此前 site/↔web/public 双份数据的坑已消除）。改量表数据/元数据 = 只改 `web/public/assets/{scales.js,library.js}`。
 - 逐页升级路径：fill/view/docs 目前仍是老的内联 JS 静态页；将来可逐页改成 `.astro` + React 岛（用 shadcn/cult-ui 等）。
