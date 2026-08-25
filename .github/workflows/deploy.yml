@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy site/ to Netlify (production)
-        run: npx --yes netlify-cli@27 deploy --prod --dir=site --message "CI deploy: ${{ github.sha }}"
+        run: npx --yes netlify-cli@27 deploy --prod --dir=site --message "CI deploy ${{ github.sha }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
