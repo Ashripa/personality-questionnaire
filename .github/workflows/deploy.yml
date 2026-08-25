@@ -1,11 +1,11 @@
 name: Deploy to Netlify
 
-# push 到 main 且改动涉及站点/工作流时，自动部署 site/ 到 Netlify 生产环境
+# push 到 main 且改动涉及 Astro 站点/工作流时，构建 web/ 并部署 web/dist 到 Netlify 生产环境
 on:
   push:
     branches: [main]
     paths:
-      - 'site/**'
+      - 'web/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch: {}   # 也可在 Actions 页手动触发
 
@@ -19,8 +19,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy site/ to Netlify (production)
-        run: npx --yes netlify-cli@27 deploy --prod --dir=site --message "CI deploy ${{ github.sha }}"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+        working-directory: web
+
+      - name: Build Astro site
+        run: pnpm build
+        working-directory: web
+
+      - name: Deploy web/dist to Netlify (production)
+        run: npx --yes netlify-cli@27 deploy --prod --dir=web/dist --message "CI deploy ${{ github.sha }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
