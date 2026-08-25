@@ -37,8 +37,7 @@ function renderHub(){
     const d=LIB.find(x=>x.id===id), s=SCALES[id];
     const nf=Object.keys(s.factors).length;
     return `<a class="scard" href="fill.html?s=${id}">
-      <div class="scard-top">${catDot(d.cat)}<span class="scard-name">${esc(d.n)}</span>
-        ${s.gemini?'<span class="gemini-tag" title="中文题项由 Gemini 生成参考译文">Gemini 译</span>':''}</div>
+      <div class="scard-top">${catDot(d.cat)}<span class="scard-name">${esc(d.n)}</span></div>
       <div class="scard-en">${esc(d.en)}</div>
       <div class="scard-meta">
         <span class="m">${s.items.length} 题</span><span class="m">${nf} 维度</span>
@@ -57,7 +56,7 @@ function renderIntro(){
     <div class="dt-head">
       <div class="dt-crumb"><a href="fill.html">问卷填写</a> / ${catName(d.cat)}</div>
       <div class="dt-title"><h1>${esc(scale.name)}</h1><span class="scard-en">${esc(scale.en)}</span></div>
-      <div class="dt-sub">${catDot(d.cat)}<span>${catName(d.cat)}</span>${scale.gemini?'<span class="gemini-tag" title="中文题项由 Gemini 生成参考译文">Gemini 译</span>':''}</div>
+      <div class="dt-sub">${catDot(d.cat)}<span>${catName(d.cat)}</span></div>
     </div>
     <div class="quiz">
       <div class="res-scale" style="margin-top:24px">
@@ -68,7 +67,6 @@ function renderIntro(){
       </div>
       <p style="color:var(--muted);margin:18px 0;line-height:1.7">${esc(scale.instr_zh)}</p>
       ${scale.note?`<blockquote class="prose" style="margin:0 0 18px">${esc(scale.note)}</blockquote>`:''}
-      ${scale.gemini?`<blockquote class="prose gemini-note" style="margin:0 0 18px"><strong>⚙ Gemini 更新：</strong>${esc(scale.gnote||'本量表的中文题项由 Gemini 生成，为参考译文，非官方验证版本。')}</blockquote>`:''}
       <div class="res-scale" style="background:var(--surface-2)">
         <label style="font-size:13px;color:var(--faint);display:block;margin-bottom:6px">参与者编号（选填，用于数据导出标记）</label>
         <input id="pid" type="text" placeholder="如 P001" style="width:100%;padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--ink);font-size:14px;outline:none">
@@ -228,7 +226,7 @@ function buildData(){
   return {
     scale:scale.id, scale_name:scale.name, participant_id:(pid&&pid.trim())||null,
     timestamp:new Date().toISOString(), duration_seconds:Math.round((Date.now()-t0)/1000),
-    format:scale.fc?'forced_choice':'likert', gemini_assisted:!!scale.gemini,
+    format:scale.fc?'forced_choice':'likert',
     response_scale:scale.fc?[{value:'a',label:'A'},{value:'b',label:'B'}]:scale.anchors.map(a=>({value:a.v,label:a.zh})),
     responses:scale.items.map((it,i)=>{
       if(it.fc){

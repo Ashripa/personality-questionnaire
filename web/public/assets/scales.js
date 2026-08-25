@@ -310,11 +310,11 @@ SCALES.bfi2 = {
   ]
 };
 
-/* ---------- ECR-R 亲密关系依恋（36题；中文为 Gemini 参考译文） ---------- */
+/* ---------- ECR-R 亲密关系依恋（36题；中文为参考译文） ---------- */
 SCALES.ecr = {
   id:'ecr', name:'ECR-R 亲密关系经历量表（修订版）', en:'Experiences in Close Relationships-Revised',
-  cat:'interpersonal', time:'8–10 分钟', gemini:true,
-  gnote:'ECR-R 官方无广泛验证的中文版；本页中文题项为 Gemini 依据英文原句生成的参考译文，仅供理解，正式研究请使用已验证中文版（或李同归 2006 的 ECR 中文版）。',
+  cat:'interpersonal', time:'8–10 分钟',
+  note:'ECR-R 暂无广泛验证的中文版；本页中文题项为依据英文原句的参考译文，仅供理解，正式研究请使用已验证中文版（如李同归 2006 的 ECR 中文版）。',
   cite:'Fraley, R. C., Waller, N. G., & Brennan, K. A. (2000). JPSP, 78(2), 350-365.',
   license:'免费用于研究（作者 R. C. Fraley 网站提供题项与计分）。',
   source:['Fraley Lab','https://labs.psychology.illinois.edu/~rcfraley/measures/ecrr.htm'],
@@ -464,17 +464,16 @@ SCALES.svs = {
   ]
 };
 
-/* ---------- NPI-40 自恋人格（40题迫选；中文为 Gemini 参考译文） ---------- */
+/* ---------- NPI-40 自恋人格（40题迫选；中文为参考译文） ---------- */
 SCALES.npi = {
   id:'npi', name:'NPI-40 自恋人格量表', en:'Narcissistic Personality Inventory (40)',
-  cat:'dark', time:'8–12 分钟', fc:true, gemini:true,
-  gnote:'NPI 存在多种中文改编（迫选或李克特），本页 A/B 两侧中文均为 Gemini 依据英文原句生成的参考译文，仅供理解；正式研究请采用已验证中文版（如郑涌等 2005）。',
+  cat:'dark', time:'8–12 分钟', fc:true,
   cite:'Raskin, R., & Terry, H. (1988). JPSP, 54(5), 890-902.',
   license:'原论文公开（1979/1988），学术免费使用。',
   source:['DOI','https://doi.org/10.1037/0022-3514.54.5.890'],
   pts:2, min:0,
   instr_zh:'每题包含 A、B 两个陈述。请选出更接近你对自己的感受与看法的那一个。没有对错之分。测量的是一般人群中的（亚临床）自恋倾向，不用于诊断自恋型人格障碍。',
-  note:'计分：每选择一个自恋方向的陈述计1分，总分0–40。大学生样本均值通常在15–17。7个子维度用于刻画自恋的不同侧面。',
+  note:'本页 A/B 两侧中文为依据英文原句的参考译文，仅供理解；NPI 有多种中文改编，正式研究请采用已验证中文版（如郑涌等 2005）。计分：每选择一个自恋方向的陈述计1分，总分0–40。大学生样本均值通常在15–17。7个子维度用于刻画自恋的不同侧面。',
   factors:{
     AU:{zh:"权威",en:"Authority",desc:{h:"强烈偏好领导、支配与掌控局面。",m:"中等。",l:"不强求权威或领导地位。"}},
     SS:{zh:"自我满足",en:"Self-Sufficiency",desc:{h:"高度自信独立，强调自给自足与自我能力。",m:"中等。",l:"较能承认对他人的依赖与自身局限。"}},
@@ -532,18 +531,17 @@ SCALES.npi = {
   ]
 };
 
-/* ---------- IPIP-VIA 性格优势 24题筛查版（公有领域；中文为 Gemini 参考译文） ---------- */
+/* ---------- IPIP-VIA 性格优势 24题筛查版（公有领域；中文为参考译文） ---------- */
 SCALES.via = {
   id:'via', name:'IPIP-VIA 性格优势量表（24题筛查版）', en:'IPIP-VIA Character Strengths (24-item screener)',
-  cat:'positive', time:'4–6 分钟', gemini:true,
-  gnote:'官方 VIA-IS 题项受版权保护、未公开发行。本量表采用与 VIA 相同 24 项优势对应的公有领域 IPIP-VIA 题项（每优势 1 题，英文逐字取自 ipip.ori.org），中文为 Gemini 参考译文。这不是官方 VIA-IS；正式测评请用 viacharacter.org。',
+  cat:'positive', time:'4–6 分钟',
   cite:'Goldberg, L. R. (1999), International Personality Item Pool; VIA 分类见 Peterson & Seligman (2004).',
   license:'IPIP-VIA 题项属公共领域，可自由复制、修改与使用。',
   source:['IPIP-VIA','https://ipip.ori.org/newVIAKey.htm'],
   pts:5, min:1,
   anchors:[{v:1,zh:'很不准确'},{v:2,zh:'比较不准确'},{v:3,zh:'不确定'},{v:4,zh:'比较准确'},{v:5,zh:'很准确'}],
   instr_zh:'请描述你现在通常的样子（而非期望的样子），指出下面每项对你的准确程度。这是一套按 6 大美德归纳的性格优势自评（每题对应一种优势）。',
-  note:'按 Peterson & Seligman（2004）的 6 大美德归类展示。单题版仅作快速筛查；完整优势排序请使用官方 VIA 测评。',
+  note:'官方 VIA-IS 题项受版权保护、未公开发行；本量表采用与 VIA 相同 24 项优势对应的公有领域 IPIP-VIA 题项（每优势 1 题，英文逐字取自 ipip.ori.org），中文为参考译文。这不是官方 VIA-IS，仅作快速筛查；完整优势排序请用官方 viacharacter.org。',
   factors:{
     W:{zh:"智慧",en:"Wisdom",desc:{h:"认知类优势突出：富创造力、好奇、明辨、好学且有洞察。",m:"中等。",l:"认知探索类优势相对不突出。"}},
     C:{zh:"勇气",en:"Courage",desc:{h:"意志类优势突出：勇敢、诚实、坚毅、充满热忱。",m:"中等。",l:"意志克难类优势相对不突出。"}},

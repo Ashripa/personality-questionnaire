@@ -307,15 +307,6 @@ a:hover{text-decoration:underline}
 .fc-zh{font-size:15.5px;font-weight:600;line-height:1.5}
 .fc-en{font-size:12.5px;color:var(--faint);font-style:italic;line-height:1.45}
 
-/* ---------- Gemini 更新标注 ---------- */
-.gemini-tag{display:inline-flex;align-items:center;font-family:var(--sans);font-size:11px;font-weight:600;
-  padding:1px 8px;border-radius:20px;background:var(--accent-bg);color:var(--accent-ink);
-  border:1px solid var(--accent);letter-spacing:.02em;white-space:nowrap}
-.gemini-tag::before{content:"⚙";margin-right:4px;font-size:10px}
-.gemini-note{border-left:3px solid var(--accent);background:var(--accent-bg);
-  padding:10px 14px;border-radius:6px;font-size:13px;color:var(--ink);line-height:1.6;margin:0 0 14px}
-.gemini-note strong{color:var(--accent-ink)}
-
 /* ---------- footer ---------- */
 .footer{border-top:1px solid var(--border);padding:28px 0;margin-top:40px;color:var(--faint);font-size:13px}
 .footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}

@@ -248,5 +248,5 @@ openvocab:['Scholar','https://scholar.google.com/scholar?q=schwartz+2013+%22pers
 esm:['Scholar','https://scholar.google.com/scholar?q=csikszentmihalyi+%22experience+sampling+method%22']
 };
 
-// 可在线作答的量表 id（有完整双语结构化题库，见 scales.js）
-const FILLABLE = ['ipip','rses','gse','ds14','scc','brs'];
+// 可在线作答的量表 id（有完整双语结构化题库，见 scales.js）；按收集表优先级排序
+const FILLABLE = ['ipip','bfi2','rses','ecr','npi','via','rotter','svs','gse','ds14','scc','brs'];

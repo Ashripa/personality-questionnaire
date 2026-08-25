@@ -43,7 +43,6 @@ function renderDetail(id){
     main += `<p><strong>指导语：</strong>${esc(sc.instr_zh)}</p>`;
     main += `<p><strong>作答方式：</strong>${sc.fc?'迫选（A/B 二选一）':sc.pts+' 点评分（'+sc.anchors.map(a=>a.v+'='+esc(a.zh)).join(' · ')+'）'}</p>`;
     if(sc.note) main += `<blockquote>${esc(sc.note)}</blockquote>`;
-    if(sc.gemini) main += `<blockquote class="gemini-note"><strong>⚙ Gemini 更新：</strong>${esc(sc.gnote||'本量表中文题项由 Gemini 生成，为参考译文，非官方验证版本。')}</blockquote>`;
     const facNames = Object.keys(sc.factors).map(k=>sc.factors[k].zh+'（'+sc.factors[k].en+'）').join('、');
     main += `<p><strong>维度：</strong>${facNames}</p>`;
     if(sc.fc){
@@ -81,7 +80,7 @@ function renderDetail(id){
     <div class="dt-head">
       <div class="dt-crumb"><a href="view.html">问卷查看</a> / ${catName(d.cat)}</div>
       <div class="dt-title"><h1>${esc(d.n)}</h1><span class="scard-en">${esc(d.en)}</span></div>
-      <div class="dt-sub">${catDot(d.cat)}<span>${catName(d.cat)}</span> ${priTag(d.p)} ${stTag(id)} ${accTag(d.acc)} ${sc&&sc.gemini?'<span class="gemini-tag" title="中文题项由 Gemini 生成参考译文">Gemini 译</span>':''}</div>
+      <div class="dt-sub">${catDot(d.cat)}<span>${catName(d.cat)}</span> ${priTag(d.p)} ${stTag(id)} ${accTag(d.acc)}</div>
       <div class="dt-actions">
         ${fillable?`<a class="btn btn-primary" href="fill.html?s=${id}">在线作答 →</a>`:''}
         ${src?`<a class="btn btn-ghost" href="${src[1]}" target="_blank" rel="noopener">数据来源：${esc(src[0])}</a>`:''}

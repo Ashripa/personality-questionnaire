@@ -41,6 +41,7 @@ function renderHub(){
       <div class="scard-en">${esc(d.en)}</div>
       <div class="scard-meta">
         <span class="m">${s.items.length} 题</span><span class="m">${nf} 维度</span>
+        ${s.fc?'<span class="m">迫选</span>':''}
         <span class="m">${esc(s.time)}</span><span>${catName(d.cat)}</span></div>
     </a>`;
   }).join('');
@@ -61,7 +62,7 @@ function renderIntro(){
       <div class="res-scale" style="margin-top:24px">
         <div class="meta-row"><span class="k">题量</span><span class="v">${scale.items.length} 题</span></div>
         <div class="meta-row"><span class="k">维度</span><span class="v">${facNames}</span></div>
-        <div class="meta-row"><span class="k">作答量表</span><span class="v">${scale.pts} 点</span></div>
+        <div class="meta-row"><span class="k">作答方式</span><span class="v">${scale.fc?'迫选（A/B 二选一）':scale.pts+' 点评分'}</span></div>
         <div class="meta-row"><span class="k">预计用时</span><span class="v">${esc(scale.time)}</span></div>
       </div>
       <p style="color:var(--muted);margin:18px 0;line-height:1.7">${esc(scale.instr_zh)}</p>
@@ -93,29 +94,57 @@ function renderItem(){
   const it=scale.items[cur];
   document.getElementById('pf').style.width=(cur/scale.items.length*100)+'%';
   document.getElementById('pl').textContent=`${cur} / ${scale.items.length}`;
-  const opts=scale.anchors.map(a=>{
-    const sel=answers[cur]===a.v?'sel':'';
-    return `<button class="opt ${sel}" onclick="rate(${a.v})"><span>${a.v}</span></button>`;
-  }).join('');
-  document.getElementById('qc').innerHTML = `
-    <div class="q-num">第 ${cur+1} 题 / 共 ${scale.items.length} 题</div>
-    <div class="q-zh">${esc(it.zh)}</div>
-    <div class="q-en">${esc(it.en)}</div>
-    <div class="q-opts">${opts}</div>
-    <div class="q-anchors"><span>${esc(scale.anchors[0].zh)}</span><span>${esc(scale.anchors[scale.anchors.length-1].zh)}</span></div>
-    <div class="q-back"><button class="btn btn-ghost btn-sm" onclick="goPrev()" ${cur===0?'disabled':''}>← 上一题</button></div>`;
+  let body;
+  if(it.fc){
+    const mk=(c,o)=>`<button class="fc-opt ${answers[cur]===c?'sel':''}" onclick="pick('${c}')">
+      <span class="fc-key">${c.toUpperCase()}</span>
+      <span class="fc-txt"><span class="fc-zh">${esc(o.zh)}</span><span class="fc-en">${esc(o.en)}</span></span></button>`;
+    body=`
+      <div class="q-num">第 ${cur+1} 题 / 共 ${scale.items.length} 题${it.filler?'　·　填充题（不计分）':''}</div>
+      <div class="q-fc-lead">请选择更符合你的一项：</div>
+      <div class="fc-opts">${mk('a',it.a)}${mk('b',it.b)}</div>
+      <div class="q-back"><button class="btn btn-ghost btn-sm" onclick="goPrev()" ${cur===0?'disabled':''}>← 上一题</button></div>`;
+  } else {
+    const opts=scale.anchors.map(a=>{
+      const sel=answers[cur]===a.v?'sel':'';
+      return `<button class="opt ${sel}" onclick="rate(${a.v})"><span>${a.v}</span></button>`;
+    }).join('');
+    body=`
+      <div class="q-num">第 ${cur+1} 题 / 共 ${scale.items.length} 题</div>
+      <div class="q-zh">${esc(it.zh)}</div>
+      <div class="q-en">${esc(it.en)}</div>
+      <div class="q-opts">${opts}</div>
+      <div class="q-anchors"><span>${esc(scale.anchors[0].zh)}</span><span>${esc(scale.anchors[scale.anchors.length-1].zh)}</span></div>
+      <div class="q-back"><button class="btn btn-ghost btn-sm" onclick="goPrev()" ${cur===0?'disabled':''}>← 上一题</button></div>`;
+  }
+  document.getElementById('qc').innerHTML = body;
+}
+function advance(){
+  if(cur<scale.items.length-1){ setTimeout(()=>{cur++;renderItem();},240); }
+  else { document.getElementById('pf').style.width='100%'; document.getElementById('pl').textContent=`${scale.items.length} / ${scale.items.length}`; setTimeout(showResults,320); }
 }
 function rate(v){
   answers[cur]=v;
   document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel', +b.querySelector('span').textContent===v));
-  if(cur<scale.items.length-1){ setTimeout(()=>{cur++;renderItem();},240); }
-  else { document.getElementById('pf').style.width='100%'; document.getElementById('pl').textContent=`${scale.items.length} / ${scale.items.length}`; setTimeout(showResults,320); }
+  advance();
+}
+function pick(c){
+  answers[cur]=c;
+  document.querySelectorAll('.fc-opt').forEach((b,i)=>b.classList.toggle('sel', (i===0?'a':'b')===c));
+  advance();
 }
 function goPrev(){ if(cur>0){cur--;renderItem();} }
 document.addEventListener('keydown',e=>{
   if(!scale||!document.getElementById('qc'))return;
-  const vals=scale.anchors.map(a=>String(a.v));
-  if(vals.includes(e.key)){e.preventDefault();rate(+e.key);}
+  const it=scale.items[cur];
+  if(it&&it.fc){
+    const k=e.key.toLowerCase();
+    if(k==='a'||k==='1'){e.preventDefault();pick('a');}
+    else if(k==='b'||k==='2'){e.preventDefault();pick('b');}
+  } else {
+    const vals=scale.anchors.map(a=>String(a.v));
+    if(vals.includes(e.key)){e.preventDefault();rate(+e.key);}
+  }
   if(e.key==='ArrowLeft'){e.preventDefault();goPrev();}
 });
 
@@ -192,22 +221,40 @@ function drawRadar(facs){
 /* ---------- export ---------- */
 function buildData(){
   const {facs,extra}=scoreScaleData(scale,answers);
-  const max=scale.min+scale.pts-1, revBase=2*scale.min+scale.pts-1;
+  const revBase=2*scale.min+scale.pts-1;
   const pid=(document.getElementById('pid')||{}).value;
   return {
     scale:scale.id, scale_name:scale.name, participant_id:(pid&&pid.trim())||null,
     timestamp:new Date().toISOString(), duration_seconds:Math.round((Date.now()-t0)/1000),
-    response_scale:scale.anchors.map(a=>({value:a.v,label:a.zh})),
-    responses:scale.items.map((it,i)=>({item:i+1,text_zh:it.zh,factor:it.f,reverse:!!it.r,
-      response:answers[i],scored:it.r?(revBase-answers[i]):answers[i]})),
+    format:scale.fc?'forced_choice':'likert',
+    response_scale:scale.fc?[{value:'a',label:'A'},{value:'b',label:'B'}]:scale.anchors.map(a=>({value:a.v,label:a.zh})),
+    responses:scale.items.map((it,i)=>{
+      if(it.fc){
+        return {item:i+1,forced_choice:true,filler:!!it.filler,
+          option_a:it.a.zh,option_b:it.b.zh,factor:it.filler?null:it.f,
+          keyed:it.key||null,response:answers[i],
+          scored:it.filler?null:((answers[i]===it.key)?1:0)};
+      }
+      return {item:i+1,text_zh:it.zh,factor:it.f,reverse:!!it.r,
+        response:answers[i],scored:it.r?(revBase-answers[i]):answers[i]};
+    }),
     scores:Object.fromEntries(facs.map(f=>[f.key,{name:f.zh,sum:f.sum,max:f.maxP,pct:f.pct,level:f.level}])),
     note:extra||null
   };
 }
 function buildCSV(){
   const revBase=2*scale.min+scale.pts-1;
-  let s='item,text_zh,factor,reverse,response,scored\n';
-  scale.items.forEach((it,i)=>{s+=`${i+1},"${it.zh.replace(/"/g,'""')}",${it.f},${it.r?1:0},${answers[i]},${it.r?(revBase-answers[i]):answers[i]}\n`;});
+  let s;
+  if(scale.fc){
+    s='item,forced_choice,filler,option_a,option_b,factor,keyed,response,scored\n';
+    scale.items.forEach((it,i)=>{
+      const sc=it.filler?'':((answers[i]===it.key)?1:0);
+      s+=`${i+1},1,${it.filler?1:0},"${it.a.zh.replace(/"/g,'""')}","${it.b.zh.replace(/"/g,'""')}",${it.filler?'':it.f},${it.key||''},${answers[i]},${sc}\n`;
+    });
+  } else {
+    s='item,text_zh,factor,reverse,response,scored\n';
+    scale.items.forEach((it,i)=>{s+=`${i+1},"${it.zh.replace(/"/g,'""')}",${it.f},${it.r?1:0},${answers[i]},${it.r?(revBase-answers[i]):answers[i]}\n`;});
+  }
   s+='\nfactor,name,sum,max,pct,level\n';
   scoreScaleData(scale,answers).facs.forEach(f=>{s+=`${f.key},${f.zh},${f.sum},${f.maxP},${f.pct},${f.level}\n`;});
   return s;

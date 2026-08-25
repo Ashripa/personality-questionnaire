@@ -60,8 +60,15 @@ Questionnaire/
 - `SOURCES` — 每个 id 的 [标签, 可核实 URL]
 - `FILLABLE` — 可在线作答的 id 数组，**必须与 scales.js 的键一致**
 
-**当前可作答量表（6 个）**：`ipip`(50题) `rses`(10) `gse`(10) `ds14`(14) `scc`(12) `brs`(6)。
+**当前可作答量表（12 个）**：`ipip`(50) `bfi2`(60) `rses`(10) `ecr`(36) `npi`(40迫选) `via`(24) `rotter`(29迫选) `svs`(21) `gse`(10) `ds14`(14) `scc`(12) `brs`(6)。FILLABLE 已按收集表优先级排序。
 扩展作答量表 = 在 scales.js 加结构化对象 + 把 id 加进 FILLABLE。
+
+**2026-08-25 P1 批扩充（6 个新量表）**：按收集表 P1 顺序补充 `bfi2/ecr/npi/via/rotter/svs`。
+- **计分引擎升级**：`scoreScaleData()` 现支持迫选题（`fc`）与逐题独立量程。迫选题结构 `{fc:1,f:'因子',key:'a'|'b',a:{zh,en},b:{zh,en}}`，填充题 `{fc:1,filler:1,a,b}`（不计分）；作答值存 `'a'/'b'`，命中 key 计 1 分。`fill.html`/`view.html` 均已按 `it.fc` 分支渲染。
+- **参考译文（原 Gemini 标注）**：源 .md 缺可核实中文版时，用本机 Gemini 代理（`http://127.0.0.1:2156/v1/chat/completions`，OpenAI 兼容，`gemini-2.5-flash`/`-pro`）逐条生成中文参考译文——`ecr`(ECR-R 无验证中文版)、`npi`(A/B 两侧中文)、`via`(公有领域 IPIP-VIA 译文) 三个；`bfi2`(Colby 中文版)、`rotter`(王登峰版)、`svs`(ESS 中文) 的 .md 已双语。
+  - ⚠️ **2026-08-25：按用户要求，站内已删除"Gemini 译"标注**（`.gemini-tag`/`.gemini-note` CSS、fill/view 渲染、`gemini`/`gnote` 数据字段、导出的 `gemini_assisted` 字段、scales.js 注释里的"Gemini"字样全部移除）。但**去品牌化后的权威性/参考译文说明保留在各量表 `note` 里**（如 via "这不是官方 VIA-IS…viacharacter.org"、npi/ecr "参考译文，正式研究请用已验证中文版"）——反编造红线，不能连同 Gemini 字样一起删掉真实性说明。用户希望"用了 AI 翻译"这类过程标注只留在本地 `题库收集进度.html`（该文件目前尚无此记录，待补）。
+- **反编造把关**：英文题项逐字取自已核实 .md/来源（VIA 用公有领域 IPIP-VIA 24 题筛查版，非官方 VIA-IS，已在 gnote 声明）；Gemini 仅做中文翻译，产出经逐条人工核对。
+- 注意：`via`(LIB 240题) / `svs`(LIB 57题) / `npi` 的 LIB 元数据描述的是完整量表族，站内实际可作答的是特定短版（IPIP-VIA 24 / PVQ-21 / NPI-40），施测信息区已注明实际题量。
 
 **采集状态统计（98）**：full 46 · struct 38 · framework 8 · risk 3 · partial 3。
 - full=完整题项可用；risk=有题项但版权风险(tas20/teique/cdrisc)；partial=部分(ias/via/srp4)；struct=仅结构(商业/专业量表，不复制题项)；framework=方法论(非固定量表)。
@@ -86,10 +93,11 @@ Questionnaire/
 
 ### ⚠️ 三个关键 gotcha
 
-1. **已改为 GitHub Actions 自动部署**（2026-08-25 起）。Netlify 本身仍未连 Git，改用 CI：`.github/workflows/deploy.yml` 在 push `main`（且改动含 `site/**` 或该 workflow）时跑 `netlify deploy --prod --dir=site`。**所以现在 push 到 main 即自动上线**，无需手动部署。
-   - 依赖两个 GitHub Secret（已设在仓库）：`NETLIFY_AUTH_TOKEN`（取自本机 netlify 登录 token）、`NETLIFY_SITE_ID`（= 30238098-...982e）。
-   - workflow YAML 坑：`run:` 单行命令里别出现"冒号+空格"（如 `--message "CI deploy: xxx"`），会被 YAML 当成 mapping 报错、0s 失败；已去掉冒号。
-   - 手动兜底（仍可用）：`netlify deploy --prod --dir=site --site=30238098-4430-46d2-bfb5-7ac1239e982e`；或 Actions 页 `workflow_dispatch` 手动触发。
+1. **GitHub Actions 自动部署，且已迁到 Astro（2026-08-25）**。Netlify 本身仍未连 Git，由 CI 代跑：`.github/workflows/deploy.yml` 在 push `main`（改动含 `web/**` 或该 workflow）时 **`corepack enable` → `pnpm install` → `pnpm build`（web/）→ `netlify deploy --prod --dir=web/dist`**。**push 到 main 即自动上线。**
+   - ⚠️ **部署源已从 `site/` 切到 `web/`（Astro）**。现在**改 `site/` 不再自动上线**；线上内容来自 `web/`（`web/public/` 是 `site/` 的静态副本 + `web/src/pages/index.astro` 的 Astro 主页）。详见 §9。
+   - 依赖两个 GitHub Secret（已设在仓库）：`NETLIFY_AUTH_TOKEN`（本机 netlify 登录 token）、`NETLIFY_SITE_ID`（= 30238098-...982e）。
+   - workflow YAML 坑：`run:` 单行命令里别出现"冒号+空格"，会被 YAML 当成 mapping 报错、0s 失败。
+   - 手动兜底：`cd web && pnpm build && netlify deploy --prod --dir=web/dist --site=30238098-4430-46d2-bfb5-7ac1239e982e`；或 Actions 页 `workflow_dispatch`。
 2. **git 走代理**：本机走 `http://127.0.0.1:7890` 代理，但 git 默认不继承，会报 `TLS connect error`。已给该仓库设了本地 `http.proxy`。若换机/换仓库遇到同样报错：
    ```bash
    git config http.proxy http://127.0.0.1:7890
@@ -117,3 +125,10 @@ Questionnaire/
 - 中文沟通；要专业、信息直给、全面；**极度重视反编造/可核实**。
 - 调研类任务默认派并行子代理、产出可视化报告。
 - 部署目标 Netlify；代码托管在自己的 GitHub（Ashripa）。
+
+## 9. Astro 迁移（2026-08-25）—— 部署源已切到 web/
+- **动机**：用户要复刻 cult-ui `hero-static-radial-gradient`，纯静态 HTML 只能 CSS 复刻。迁到 Astro 后可用真组件生态。
+- **技术栈**：`web/` = Astro 7 + `@astrojs/react` + React 19 + `@paper-design/shaders-react`（cult-ui 那个 hero 底层的真实 WebGL 着色器 `StaticRadialGradient`）。用 **pnpm**（本机 npm 8.1.4 与 Node 22 不兼容；pnpm 8.10，`packageManager` 已 pin）。本机装依赖走国内镜像 `web/.npmrc`（已 gitignore，不进仓库、不影响 CI）。
+- **结构**：`web/src/pages/index.astro`（主页，hero 是 `web/src/components/Hero.tsx` React 岛 `client:load`，真着色器 + CSS 渐变降级底）；`web/public/{fill,view,docs}.html` + `web/public/assets/*` 是 `site/` 的**静态副本**（lift-and-shift）。`astro.config.mjs` 用 `build.format:'file'` → 输出 `fill.html/view.html/...`，保持 `?s=xxx` 链接不变。
+- ⚠️ **数据现在有两份**：`site/assets/*` 与 `web/public/assets/*`。**线上只认 `web/`**。改数据/量表后必须同步到 `web/public/`（目前手动 `cp`），否则线上不变。**待办**：消除重复（让 Astro 直接从 `../site` 引，或把 `site/` 退役、只留 `web/`）。
+- 逐页升级路径：fill/view/docs 目前仍是老的内联 JS 静态页；将来可逐页改成 `.astro` + React 岛（用 shadcn/cult-ui 等）。
