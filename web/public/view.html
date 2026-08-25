@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>问卷查看 · 人格测评量表库</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div id="nav"></div>
+<main class="wrap" id="root"></main>
+<div id="footer"></div>
+
+<script src="assets/library.js"></script>
+<script src="assets/scales.js"></script>
+<script src="assets/common.js"></script>
+<script>
+mountChrome('view');
+const params = new URLSearchParams(location.search);
+const detailId = params.get('s');
+
+/* ============ DETAIL VIEW ============ */
+function renderDetail(id){
+  const d = LIB.find(x=>x.id===id);
+  if(!d){ document.getElementById('root').innerHTML = `<div class="empty">未找到该量表。<a href="view.html">返回列表</a></div>`; return; }
+  const st = STATUS[id]||'struct', src = SOURCES[id];
+  const sc = SCALES[id];
+  const fillable = FILLABLE.includes(id);
+
+  const meta = [
+    ['英文名', esc(d.en)], ['流派', catName(d.cat)], ['认可度', d.s+' / 5'],
+    ['题量', esc(d.q)], ['优先级', 'P'+d.p], ['收录状态', ST_LABEL[st]],
+    ['获取方式', ACC_LABEL[d.acc]||d.acc], ['中文版', esc(d.cn)]
+  ].map(([k,v])=>`<div class="meta-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+
+  let main = `<div class="prose">`;
+  main += `<h2>版权与许可</h2><p>${esc(d.cr)}</p>`;
+  if(d.note) main += `<h2>说明</h2><p>${esc(d.note)}</p>`;
+
+  if(sc){
+    main += `<h2>施测信息</h2>`;
+    main += `<p><strong>指导语：</strong>${esc(sc.instr_zh)}</p>`;
+    main += `<p><strong>作答方式：</strong>${sc.fc?'迫选（A/B 二选一）':sc.pts+' 点评分（'+sc.anchors.map(a=>a.v+'='+esc(a.zh)).join(' · ')+'）'}</p>`;
+    if(sc.note) main += `<blockquote>${esc(sc.note)}</blockquote>`;
+    if(sc.gemini) main += `<blockquote class="gemini-note"><strong>⚙ Gemini 更新：</strong>${esc(sc.gnote||'本量表中文题项由 Gemini 生成，为参考译文，非官方验证版本。')}</blockquote>`;
+    const facNames = Object.keys(sc.factors).map(k=>sc.factors[k].zh+'（'+sc.factors[k].en+'）').join('、');
+    main += `<p><strong>维度：</strong>${facNames}</p>`;
+    if(sc.fc){
+      main += `<h2>题项（${sc.items.length}）</h2><div class="table-scroll"><table class="items-tbl">
+        <thead><tr><th>#</th><th>选项 A</th><th>选项 B</th><th>维度</th><th>计分键</th></tr></thead><tbody>`;
+      sc.items.forEach((it,i)=>{
+        const fac = it.filler?'<span class="rev">填充·不计分</span>':(sc.factors[it.f]?sc.factors[it.f].zh:'');
+        const key = it.filler?'—':(it.key?it.key.toUpperCase()+' 计1分':'');
+        main += `<tr><td class="n">${i+1}</td>
+          <td>${esc(it.a.zh)}<span class="it-en">${esc(it.a.en)}</span></td>
+          <td>${esc(it.b.zh)}<span class="it-en">${esc(it.b.en)}</span></td>
+          <td>${fac}</td><td>${key}</td></tr>`;
+      });
+      main += `</tbody></table></div>`;
+    } else {
+      main += `<h2>题项（${sc.items.length}）</h2><div class="table-scroll"><table class="items-tbl">
+        <thead><tr><th>#</th><th>中文</th><th>English</th><th>维度</th><th>反向</th></tr></thead><tbody>`;
+      sc.items.forEach((it,i)=>{
+        main += `<tr><td class="n">${i+1}</td><td>${esc(it.zh)}</td><td>${esc(it.en)}</td>
+          <td>${sc.factors[it.f]?sc.factors[it.f].zh:''}</td><td>${it.r?'<span class="rev">R 反向</span>':''}</td></tr>`;
+      });
+      main += `</tbody></table></div>`;
+    }
+    main += `<p style="margin-top:14px;font-size:13px;color:var(--muted)">引用：${esc(sc.cite)}</p>`;
+  } else {
+    main += `<h2>题项</h2><blockquote>本量表在库中为<strong>「${ST_LABEL[st]}」</strong>。`;
+    if(st==='struct') main += '仅收录结构与元数据（多为商业授权/专业施测量表，完整题项不宜公开转载）。';
+    else if(st==='framework') main += '属理论框架/研究方法，无固定标准题本。';
+    else if(st==='risk'||st==='partial') main += '完整题项存在版权或可得性限制，未在本页完整重现。';
+    main += `请通过下方「数据来源」查阅原始出处。</blockquote>`;
+  }
+  main += `</div>`;
+
+  document.getElementById('root').innerHTML = `
+    <div class="dt-head">
+      <div class="dt-crumb"><a href="view.html">问卷查看</a> / ${catName(d.cat)}</div>
+      <div class="dt-title"><h1>${esc(d.n)}</h1><span class="scard-en">${esc(d.en)}</span></div>
+      <div class="dt-sub">${catDot(d.cat)}<span>${catName(d.cat)}</span> ${priTag(d.p)} ${stTag(id)} ${accTag(d.acc)} ${sc&&sc.gemini?'<span class="gemini-tag" title="中文题项由 Gemini 生成参考译文">Gemini 译</span>':''}</div>
+      <div class="dt-actions">
+        ${fillable?`<a class="btn btn-primary" href="fill.html?s=${id}">在线作答 →</a>`:''}
+        ${src?`<a class="btn btn-ghost" href="${src[1]}" target="_blank" rel="noopener">数据来源：${esc(src[0])}</a>`:''}
+      </div>
+    </div>
+    <div class="dt-body">
+      <div class="dt-main">${main}</div>
+      <aside class="dt-side"><h3>元数据</h3>${meta}
+        ${src?`<div class="meta-row"><span class="k">数据来源</span><span class="v"><a href="${src[1]}" target="_blank" rel="noopener">${esc(src[0])}</a></span></div>`:''}
+      </aside>
+    </div>`;
+  document.title = d.n + ' · 人格测评量表库';
+}
+
+/* ============ HUB VIEW ============ */
+const F = {cat:new Set(), st:new Set(), pri:new Set(), acc:new Set()};
+let Q = params.get('q') || '';
+let SORT = 'pri';
+if(params.get('cat')) F.cat.add(params.get('cat'));
+
+function facetCounts(key, val, base){
+  return base.filter(d=>{
+    if(key==='st') return (STATUS[d.id]||'struct')===val;
+    if(key==='pri') return d.p===val;
+    return d[key]===val;
+  }).length;
+}
+function matchFilters(d){
+  if(F.cat.size && !F.cat.has(d.cat)) return false;
+  if(F.st.size && !F.st.has(STATUS[d.id]||'struct')) return false;
+  if(F.pri.size && !F.pri.has(d.p)) return false;
+  if(F.acc.size && !F.acc.has(d.acc)) return false;
+  if(Q){ const q=Q.toLowerCase();
+    if(!((d.n+d.en+d.note+catName(d.cat)).toLowerCase().includes(q))) return false; }
+  return true;
+}
+function renderHub(){
+  const root = document.getElementById('root');
+  root.innerHTML = `
+    <div class="hub">
+      <aside class="facets" id="facets"></aside>
+      <div class="hub-main">
+        <div class="hub-bar">
+          <div class="hub-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+            <input type="text" id="q" placeholder="搜索名称 / 英文名 / 关键词…" value="${esc(Q)}"></div>
+          <select class="hub-sort" id="sort">
+            <option value="pri">按优先级</option><option value="status">按收录状态</option>
+            <option value="cat">按流派</option><option value="name">按英文名</option>
+          </select>
+          <span class="hub-count" id="count"></span>
+        </div>
+        <div class="card-list" id="list"></div>
+      </div>
+    </div>`;
+  document.getElementById('q').addEventListener('input',e=>{Q=e.target.value;renderList();});
+  document.getElementById('sort').value=SORT;
+  document.getElementById('sort').addEventListener('change',e=>{SORT=e.target.value;renderList();});
+  renderFacets(); renderList();
+}
+function facetGroup(title, key, opts, labelFn){
+  const rows = opts.map(v=>{
+    const on = F[key].has(v);
+    const cnt = facetCounts(key, v, LIB);
+    return `<div class="facet ${on?'on':''}" data-k="${key}" data-v="${v}">
+      ${key==='cat'?catDot(v):''}<span>${labelFn(v)}</span><span class="cnt">${cnt}</span></div>`;
+  }).join('');
+  return `<div class="facet-group"><h4>${title}</h4>${rows}</div>`;
+}
+function renderFacets(){
+  const el = document.getElementById('facets');
+  el.innerHTML =
+    facetGroup('流派','cat',CAT_ORDER,v=>CATS[v]) +
+    facetGroup('收录状态','st',ST_ORDER,v=>ST_LABEL[v]) +
+    facetGroup('优先级','pri',[1,2,3,4,5],v=>'P'+v) +
+    facetGroup('获取方式','acc',['open','paper','academic','commercial','strict','pro','na'],v=>ACC_LABEL[v]);
+  el.querySelectorAll('.facet').forEach(f=>f.addEventListener('click',()=>{
+    const k=f.dataset.k; let v=f.dataset.v; if(k==='pri')v=+v;
+    F[k].has(v)?F[k].delete(v):F[k].add(v);
+    renderFacets(); renderList();
+  }));
+}
+function renderList(){
+  let items = LIB.filter(matchFilters);
+  items.sort((a,b)=>{
+    if(SORT==='pri') return a.p-b.p || a.en.localeCompare(b.en);
+    if(SORT==='status') return ST_ORDER.indexOf(STATUS[a.id])-ST_ORDER.indexOf(STATUS[b.id]) || a.p-b.p;
+    if(SORT==='cat') return CAT_ORDER.indexOf(a.cat)-CAT_ORDER.indexOf(b.cat) || a.p-b.p;
+    return a.en.localeCompare(b.en);
+  });
+  document.getElementById('count').textContent = items.length+' / '+LIB.length+' 个量表';
+  const list = document.getElementById('list');
+  if(!items.length){ list.innerHTML = `<div class="empty">没有匹配的量表</div>`; return; }
+  list.innerHTML = items.map(d=>{
+    const src=SOURCES[d.id];
+    return `<a class="scard" href="view.html?s=${d.id}">
+      <div class="scard-top">${catDot(d.cat)}<span class="scard-name">${esc(d.n)}</span>
+        <span class="scard-en">${esc(d.en)}</span></div>
+      <div class="scard-meta">
+        ${priTag(d.p)} ${stTag(d.id)}
+        <span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>${esc(d.q)}</span>
+        <span class="m">${catName(d.cat)}</span>
+        ${accTag(d.acc)}
+        ${FILLABLE.includes(d.id)?'<span class="tag st-full">可作答</span>':''}
+      </div>
+      <div class="scard-note">${esc(d.note)}</div>
+    </a>`;
+  }).join('');
+}
+
+if(detailId) renderDetail(detailId); else renderHub();
+</script>
+</body>
+</html>

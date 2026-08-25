@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>问卷填写 · 人格测评量表库</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div id="nav"></div>
+<main class="wrap" id="root"></main>
+<div id="footer"></div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/library.js"></script>
+<script src="assets/scales.js"></script>
+<script src="assets/common.js"></script>
+<script>
+mountChrome('fill');
+const FCOLOR = ['#0f766e','#c0562f','#3a6ea5','#8a6d1f','#7a5cc0','#b3467a'];
+const params = new URLSearchParams(location.search);
+const sid = params.get('s');
+let cur=0, t0=null, answers=[], scale=null;
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ---------- hub ---------- */
+function renderHub(){
+  document.getElementById('root').innerHTML = `
+    <div class="hero" style="border:none;padding:40px 0 10px">
+      <h1 class="serif" style="font-size:30px">问卷填写</h1>
+      <p class="lede">以下量表均为双语、公开可用、题项经核实，可在线作答并导出数据。选择一个开始。</p>
+    </div>
+    <section class="section" style="padding-top:14px"><div class="grid-2" id="list"></div></section>`;
+  document.getElementById('list').innerHTML = FILLABLE.map(id=>{
+    const d=LIB.find(x=>x.id===id), s=SCALES[id];
+    const nf=Object.keys(s.factors).length;
+    return `<a class="scard" href="fill.html?s=${id}">
+      <div class="scard-top">${catDot(d.cat)}<span class="scard-name">${esc(d.n)}</span>
+        ${s.gemini?'<span class="gemini-tag" title="中文题项由 Gemini 生成参考译文">Gemini 译</span>':''}</div>
+      <div class="scard-en">${esc(d.en)}</div>
+      <div class="scard-meta">
+        <span class="m">${s.items.length} 题</span><span class="m">${nf} 维度</span>
+        ${s.fc?'<span class="m">迫选</span>':''}
+        <span class="m">${esc(s.time)}</span><span>${catName(d.cat)}</span></div>
+    </a>`;
+  }).join('');
+}
+
+/* ---------- intro ---------- */
+function renderIntro(){
+  const d=LIB.find(x=>x.id===sid);
+  const nf=Object.keys(scale.factors).length;
+  const facNames=Object.keys(scale.factors).map(k=>scale.factors[k].zh).join('、');
+  document.getElementById('root').innerHTML = `
+    <div class="dt-head">
+      <div class="dt-crumb"><a href="fill.html">问卷填写</a> / ${catName(d.cat)}</div>
+      <div class="dt-title"><h1>${esc(scale.name)}</h1><span class="scard-en">${esc(scale.en)}</span></div>
+      <div class="dt-sub">${catDot(d.cat)}<span>${catName(d.cat)}</span>${scale.gemini?'<span class="gemini-tag" title="中文题项由 Gemini 生成参考译文">Gemini 译</span>':''}</div>
+    </div>
+    <div class="quiz">
+      <div class="res-scale" style="margin-top:24px">
+        <div class="meta-row"><span class="k">题量</span><span class="v">${scale.items.length} 题</span></div>
+        <div class="meta-row"><span class="k">维度</span><span class="v">${facNames}</span></div>
+        <div class="meta-row"><span class="k">作答方式</span><span class="v">${scale.fc?'迫选（A/B 二选一）':scale.pts+' 点评分'}</span></div>
+        <div class="meta-row"><span class="k">预计用时</span><span class="v">${esc(scale.time)}</span></div>
+      </div>
+      <p style="color:var(--muted);margin:18px 0;line-height:1.7">${esc(scale.instr_zh)}</p>
+      ${scale.note?`<blockquote class="prose" style="margin:0 0 18px">${esc(scale.note)}</blockquote>`:''}
+      ${scale.gemini?`<blockquote class="prose gemini-note" style="margin:0 0 18px"><strong>⚙ Gemini 更新：</strong>${esc(scale.gnote||'本量表的中文题项由 Gemini 生成，为参考译文，非官方验证版本。')}</blockquote>`:''}
+      <div class="res-scale" style="background:var(--surface-2)">
+        <label style="font-size:13px;color:var(--faint);display:block;margin-bottom:6px">参与者编号（选填，用于数据导出标记）</label>
+        <input id="pid" type="text" placeholder="如 P001" style="width:100%;padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--ink);font-size:14px;outline:none">
+      </div>
+      <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="startQuiz()">开始作答 →</button>
+        <a class="btn btn-ghost" href="view.html?s=${sid}">查看题库详情</a>
+      </div>
+      <p style="font-size:12.5px;color:var(--faint);margin-top:16px">许可：${esc(scale.license)}　引用：${esc(scale.cite)}</p>
+    </div>`;
+}
+
+/* ---------- quiz ---------- */
+function startQuiz(){
+  t0=Date.now(); cur=0; answers=new Array(scale.items.length).fill(null);
+  document.getElementById('root').innerHTML = `
+    <div class="quiz">
+      <div class="prog"><div class="prog-track"><div class="prog-fill" id="pf"></div></div>
+        <div class="prog-lbl" id="pl"></div></div>
+      <div class="q-card" id="qc"></div>
+    </div>`;
+  renderItem();
+}
+function renderItem(){
+  const it=scale.items[cur];
+  document.getElementById('pf').style.width=(cur/scale.items.length*100)+'%';
+  document.getElementById('pl').textContent=`${cur} / ${scale.items.length}`;
+  let body;
+  if(it.fc){
+    const mk=(c,o)=>`<button class="fc-opt ${answers[cur]===c?'sel':''}" onclick="pick('${c}')">
+      <span class="fc-key">${c.toUpperCase()}</span>
+      <span class="fc-txt"><span class="fc-zh">${esc(o.zh)}</span><span class="fc-en">${esc(o.en)}</span></span></button>`;
+    body=`
+      <div class="q-num">第 ${cur+1} 题 / 共 ${scale.items.length} 题${it.filler?'　·　填充题（不计分）':''}</div>
+      <div class="q-fc-lead">请选择更符合你的一项：</div>
+      <div class="fc-opts">${mk('a',it.a)}${mk('b',it.b)}</div>
+      <div class="q-back"><button class="btn btn-ghost btn-sm" onclick="goPrev()" ${cur===0?'disabled':''}>← 上一题</button></div>`;
+  } else {
+    const opts=scale.anchors.map(a=>{
+      const sel=answers[cur]===a.v?'sel':'';
+      return `<button class="opt ${sel}" onclick="rate(${a.v})"><span>${a.v}</span></button>`;
+    }).join('');
+    body=`
+      <div class="q-num">第 ${cur+1} 题 / 共 ${scale.items.length} 题</div>
+      <div class="q-zh">${esc(it.zh)}</div>
+      <div class="q-en">${esc(it.en)}</div>
+      <div class="q-opts">${opts}</div>
+      <div class="q-anchors"><span>${esc(scale.anchors[0].zh)}</span><span>${esc(scale.anchors[scale.anchors.length-1].zh)}</span></div>
+      <div class="q-back"><button class="btn btn-ghost btn-sm" onclick="goPrev()" ${cur===0?'disabled':''}>← 上一题</button></div>`;
+  }
+  document.getElementById('qc').innerHTML = body;
+}
+function advance(){
+  if(cur<scale.items.length-1){ setTimeout(()=>{cur++;renderItem();},240); }
+  else { document.getElementById('pf').style.width='100%'; document.getElementById('pl').textContent=`${scale.items.length} / ${scale.items.length}`; setTimeout(showResults,320); }
+}
+function rate(v){
+  answers[cur]=v;
+  document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel', +b.querySelector('span').textContent===v));
+  advance();
+}
+function pick(c){
+  answers[cur]=c;
+  document.querySelectorAll('.fc-opt').forEach((b,i)=>b.classList.toggle('sel', (i===0?'a':'b')===c));
+  advance();
+}
+function goPrev(){ if(cur>0){cur--;renderItem();} }
+document.addEventListener('keydown',e=>{
+  if(!scale||!document.getElementById('qc'))return;
+  const it=scale.items[cur];
+  if(it&&it.fc){
+    const k=e.key.toLowerCase();
+    if(k==='a'||k==='1'){e.preventDefault();pick('a');}
+    else if(k==='b'||k==='2'){e.preventDefault();pick('b');}
+  } else {
+    const vals=scale.anchors.map(a=>String(a.v));
+    if(vals.includes(e.key)){e.preventDefault();rate(+e.key);}
+  }
+  if(e.key==='ArrowLeft'){e.preventDefault();goPrev();}
+});
+
+/* ---------- results ---------- */
+function showResults(){
+  const {facs,extra}=scoreScaleData(scale,answers);
+  const dur=Math.round((Date.now()-t0)/1000), mm=Math.floor(dur/60), ss=dur%60;
+  const d=LIB.find(x=>x.id===sid);
+  const radar = facs.length>=3 ? `<div class="radar-box" style="display:flex;justify-content:center;margin:10px 0 30px"><svg id="radar" viewBox="0 0 400 380" style="width:100%;max-width:380px;height:auto"></svg></div>` : '';
+  const cards = facs.map((f,i)=>{
+    const c=FCOLOR[i%FCOLOR.length];
+    const lvl={h:'偏高',m:'中等',l:'偏低'}[f.level];
+    return `<div class="res-fac">
+      <div class="res-fac-top"><span class="res-fac-name" style="color:${c}">${f.zh}</span>
+        <span class="res-fac-en">${f.en}</span>
+        <span class="res-fac-pct" style="color:${c}">${f.pct}%</span></div>
+      <div class="res-bar"><div class="res-bar-f" style="width:${f.pct}%;background:${c}"></div></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:7px">
+        <span class="mono" style="font-size:12.5px;color:var(--muted)">${f.sum} / ${f.maxP}</span>
+        <span class="res-lvl" style="background:var(--accent-bg);color:var(--accent-ink)">${lvl}</span></div>
+      <div class="res-fac-desc">${f.desc}</div></div>`;
+  }).join('');
+  document.getElementById('root').innerHTML = `
+    <div class="quiz" style="max-width:640px">
+      <div class="dt-head" style="border:none;padding:26px 0 6px">
+        <div class="dt-crumb"><a href="fill.html">问卷填写</a> / ${esc(scale.name)}</div>
+        <div class="dt-title"><h1 style="font-size:24px">测评结果</h1></div>
+        <p style="color:var(--muted);margin-top:6px">${esc(scale.name)}　用时 ${mm} 分 ${ss} 秒</p>
+      </div>
+      ${radar}
+      <div class="res-scale">${cards}</div>
+      ${extra?`<blockquote class="prose" style="margin:16px 0">${esc(extra)}</blockquote>`:''}
+      <div class="res-scale" style="background:var(--surface-2)">
+        <h3 style="font-size:15px;margin-bottom:4px">导出作答数据</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">用于研究分析或个人记录。包含逐题原始作答与计分结果。</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="doExport('json')">导出 JSON</button>
+          <button class="btn btn-ghost btn-sm" onclick="doExport('csv')">导出 CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="window.print()">打印 / PDF</button>
+        </div>
+      </div>
+      <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="location.href='fill.html?s=${sid}'">重新测评</button>
+        <a class="btn btn-ghost" href="fill.html">选择其他量表</a>
+      </div>
+      <p style="font-size:12px;color:var(--faint);margin-top:24px;line-height:1.7">${esc(scale.cite)}<br>结果仅供研究与自我了解参考，不构成心理诊断。</p>
+    </div>`;
+  if(facs.length>=3) drawRadar(facs);
+}
+function gc(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function drawRadar(facs){
+  const svg=document.getElementById('radar'); if(!svg)return;
+  const n=facs.length, cx=200, cy=185, R=125;
+  const ang=i=>(i*2*Math.PI/n)-Math.PI/2;
+  let h='';
+  [.25,.5,.75,1].forEach(p=>{
+    const pts=facs.map((_,i)=>`${cx+R*p*Math.cos(ang(i))},${cy+R*p*Math.sin(ang(i))}`).join(' ');
+    h+=`<polygon points="${pts}" fill="none" stroke="${gc('--border')}" stroke-width="${p===1?1.2:.5}"/>`;
+  });
+  facs.forEach((_,i)=>h+=`<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(ang(i))}" y2="${cy+R*Math.sin(ang(i))}" stroke="${gc('--border')}" stroke-width=".5"/>`);
+  const dp=facs.map((f,i)=>[cx+R*(f.pct/100)*Math.cos(ang(i)),cy+R*(f.pct/100)*Math.sin(ang(i))]);
+  h+=`<polygon points="${dp.map(p=>p.join(',')).join(' ')}" fill="${gc('--accent-bg')}" stroke="${gc('--accent')}" stroke-width="2" stroke-linejoin="round"/>`;
+  dp.forEach(([x,y],i)=>h+=`<circle cx="${x}" cy="${y}" r="4" fill="${FCOLOR[i%FCOLOR.length]}" stroke="${gc('--surface')}" stroke-width="2"/>`);
+  facs.forEach((f,i)=>{
+    const a=ang(i), lx=cx+(R+22)*Math.cos(a), ly=cy+(R+22)*Math.sin(a);
+    const anc=Math.abs(Math.cos(a))<.2?'middle':(Math.cos(a)>0?'start':'end');
+    const dy=Math.sin(a)<-.3?-4:(Math.sin(a)>.3?14:4);
+    h+=`<text x="${lx}" y="${ly+dy}" text-anchor="${anc}" fill="${gc('--ink')}" font-size="12.5" font-weight="600" font-family="Inter,sans-serif">${f.zh}</text>`;
+    h+=`<text x="${lx}" y="${ly+dy+15}" text-anchor="${anc}" fill="${gc('--faint')}" font-size="11" font-family="Inter,sans-serif">${f.pct}%</text>`;
+  });
+  svg.innerHTML=h;
+}
+
+/* ---------- export ---------- */
+function buildData(){
+  const {facs,extra}=scoreScaleData(scale,answers);
+  const revBase=2*scale.min+scale.pts-1;
+  const pid=(document.getElementById('pid')||{}).value;
+  return {
+    scale:scale.id, scale_name:scale.name, participant_id:(pid&&pid.trim())||null,
+    timestamp:new Date().toISOString(), duration_seconds:Math.round((Date.now()-t0)/1000),
+    format:scale.fc?'forced_choice':'likert', gemini_assisted:!!scale.gemini,
+    response_scale:scale.fc?[{value:'a',label:'A'},{value:'b',label:'B'}]:scale.anchors.map(a=>({value:a.v,label:a.zh})),
+    responses:scale.items.map((it,i)=>{
+      if(it.fc){
+        return {item:i+1,forced_choice:true,filler:!!it.filler,
+          option_a:it.a.zh,option_b:it.b.zh,factor:it.filler?null:it.f,
+          keyed:it.key||null,response:answers[i],
+          scored:it.filler?null:((answers[i]===it.key)?1:0)};
+      }
+      return {item:i+1,text_zh:it.zh,factor:it.f,reverse:!!it.r,
+        response:answers[i],scored:it.r?(revBase-answers[i]):answers[i]};
+    }),
+    scores:Object.fromEntries(facs.map(f=>[f.key,{name:f.zh,sum:f.sum,max:f.maxP,pct:f.pct,level:f.level}])),
+    note:extra||null
+  };
+}
+function buildCSV(){
+  const revBase=2*scale.min+scale.pts-1;
+  let s;
+  if(scale.fc){
+    s='item,forced_choice,filler,option_a,option_b,factor,keyed,response,scored\n';
+    scale.items.forEach((it,i)=>{
+      const sc=it.filler?'':((answers[i]===it.key)?1:0);
+      s+=`${i+1},1,${it.filler?1:0},"${it.a.zh.replace(/"/g,'""')}","${it.b.zh.replace(/"/g,'""')}",${it.filler?'':it.f},${it.key||''},${answers[i]},${sc}\n`;
+    });
+  } else {
+    s='item,text_zh,factor,reverse,response,scored\n';
+    scale.items.forEach((it,i)=>{s+=`${i+1},"${it.zh.replace(/"/g,'""')}",${it.f},${it.r?1:0},${answers[i]},${it.r?(revBase-answers[i]):answers[i]}\n`;});
+  }
+  s+='\nfactor,name,sum,max,pct,level\n';
+  scoreScaleData(scale,answers).facs.forEach(f=>{s+=`${f.key},${f.zh},${f.sum},${f.maxP},${f.pct},${f.level}\n`;});
+  return s;
+}
+function download(name,content,type){
+  const blob=new Blob(['﻿'+content],{type}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},100);
+}
+function doExport(fmt){
+  const pid=(buildData().participant_id)||scale.id;
+  if(fmt==='json') download(`${scale.id}-${pid}.json`,JSON.stringify(buildData(),null,2),'application/json');
+  else download(`${scale.id}-${pid}.csv`,buildCSV(),'text/csv');
+  toast('已开始下载');
+}
+
+// theme change → redraw radar if on results
+try{new MutationObserver(()=>{const {facs}=scale?scoreScaleData(scale,answers):{facs:[]}; if(document.getElementById('radar')&&facs.length>=3)drawRadar(facs);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});}catch(e){}
+
+/* ---------- route ---------- */
+if(!sid){ renderHub(); }
+else if(!SCALES[sid]){ document.getElementById('root').innerHTML=`<div class="empty">该量表暂不支持在线作答。<a href="fill.html">返回</a></div>`; }
+else { scale=SCALES[sid]; renderIntro(); }
+</script>
+</body>
+</html>
