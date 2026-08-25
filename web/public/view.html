@@ -170,13 +170,15 @@ function renderList(){
     if(SORT==='cat') return CAT_ORDER.indexOf(a.cat)-CAT_ORDER.indexOf(b.cat) || a.p-b.p;
     return a.en.localeCompare(b.en);
   });
-  document.getElementById('count').textContent = items.length+' / '+LIB.length+' 个量表';
+  const _nv=LIB.filter(x=>x.variant).length, _nb=LIB.length-_nv;
+  document.getElementById('count').textContent = items.length+' / '+_nb+' 个量表'+(_nv?'（+'+_nv+' 版本变体）':'');
   const list = document.getElementById('list');
   if(!items.length){ list.innerHTML = `<div class="empty">没有匹配的量表</div>`; return; }
   list.innerHTML = items.map(d=>{
     const src=SOURCES[d.id];
     return `<a class="scard" href="view.html?s=${d.id}">
       <div class="scard-top">${catDot(d.cat)}<span class="scard-name">${esc(d.n)}</span>
+        ${d.variant?'<span class="tag" style="background:var(--surface-2);color:var(--faint)">版本变体</span>':''}
         <span class="scard-en">${esc(d.en)}</span></div>
       <div class="scard-meta">
         ${priTag(d.p)} ${stTag(d.id)}

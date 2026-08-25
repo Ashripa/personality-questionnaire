@@ -25,14 +25,14 @@ const ST_LABEL = {full:'完整题项',risk:'版权风险',partial:'部分题项'
 const ST_ORDER = ['full','risk','partial','struct','framework'];
 
 const LIB = [
-{id:'ipip',n:'IPIP 系列',en:'International Personality Item Pool',cat:'trait',s:5,q:'50/100/300题',p:1,acc:'open',cr:'公共领域(Goldberg)，任何人可自由使用、修改、翻译、再发布',cn:'有',note:'全球最大公共题库；goldberg.com/ipip'},
-{id:'bfi2',n:'BFI / BFI-2',en:'Big Five Inventory',cat:'trait',s:5,q:'BFI-2:60题; BFI-10:10题',p:1,acc:'paper',cr:'免费用于研究(Soto & John)；商用需联系作者',cn:'有',note:'大五短量表首选；题项见原论文'},
+{id:'ipip',n:'IPIP 系列',en:'International Personality Item Pool',cat:'trait',s:5,q:'IPIP-50:50题; Mini-IPIP:20题（NEO版100/300需另获取）',p:1,acc:'open',cr:'公共领域(Goldberg)，任何人可自由使用、修改、翻译、再发布',cn:'有',note:'全球最大公共题库；goldberg.com/ipip'},
+{id:'bfi2',n:'BFI-2 系列',en:'Big Five Inventory',cat:'trait',s:5,q:'BFI-2:60题; BFI-2-S:30题; BFI-2-XS:15题',p:1,acc:'paper',cr:'免费用于研究(Soto & John)；商用需联系作者',cn:'有',note:'大五短量表首选；题项见原论文'},
 {id:'rses',n:'RSES (Rosenberg自尊量表)',en:'Rosenberg Self-Esteem Scale',cat:'self',s:5,q:'10题',p:1,acc:'open',cr:'公共领域(1965)，可自由使用',cn:'有',note:'自尊研究默认工具；全球验证最充分'},
 {id:'ecr',n:'ECR / ECR-R',en:'Experiences in Close Relationships-Revised',cat:'interpersonal',s:5,q:'36题',p:1,acc:'open',cr:'免费(Fraley)；作者网站提供题项与计分',cn:'有',note:'成人依恋标准量表；fraley.illinois.edu'},
 {id:'npi',n:'NPI / NPI-16',en:'Narcissistic Personality Inventory',cat:'dark',s:5,q:'NPI-40:40对; NPI-16:16对',p:1,acc:'paper',cr:'原论文公开(Raskin & Hall 1979)；学术免费',cn:'有',note:'亚临床自恋经典工具；迫选格式'},
 {id:'via',n:'VIA-IS / VIA-IS-R',en:'VIA Inventory of Strengths',cat:'positive',s:5,q:'240题(修订版192题)',p:1,acc:'open',cr:'免费在线施测(viacharacter.org)；学术使用免费',cn:'有',note:'积极心理学核心工具；官网免费测评'},
 {id:'rotter',n:'Rotter I-E量表',en:'Locus of Control Scale',cat:'self',s:5,q:'29题(含6填充)',p:1,acc:'paper',cr:'经典公开(1966)；原论文含全部题项',cn:'有',note:'控制源奠基性量表'},
-{id:'svs',n:'SVS / PVQ-RR',en:'Schwartz Values Survey',cat:'values',s:5,q:'57题',p:1,acc:'academic',cr:'学术免费(Schwartz)；需联系作者获取最新PVQ-RR',cn:'有',note:'跨文化价值观金标准；80+国家验证'},
+{id:'svs',n:'SVS / PVQ-RR',en:'Schwartz Values Survey',cat:'values',s:5,q:'PVQ-21:21题; PVQ-40:40题; SVS:57题',p:1,acc:'academic',cr:'学术免费(Schwartz)；需联系作者获取最新PVQ-RR',cn:'有',note:'跨文化价值观金标准；80+国家验证'},
 {id:'hexaco',n:'HEXACO-PI-R',en:'HEXACO Personality Inventory',cat:'trait',s:4,q:'全版200; 半版100; 60题',p:2,acc:'open',cr:'官网免费(hexaco.org)；可自由用于研究',cn:'有',note:'六因素模型；官网提供多语言版本'},
 {id:'pid5',n:'PID-5',en:'Personality Inventory for DSM-5',cat:'clinical',s:4,q:'全版220; 简版25题',p:2,acc:'open',cr:'APA官方发布，免费下载(psychiatry.org)',cn:'有',note:'DSM-5替代模型官方工具；APA网站可下载'},
 {id:'bisbas',n:'BIS/BAS量表',en:'BIS/BAS Scales',cat:'bio',s:4,q:'20题',p:2,acc:'paper',cr:'原论文公开(Carver & White 1994)；学术免费',cn:'有',note:'强化敏感性理论操作化；题项见原文'},
@@ -41,11 +41,11 @@ const LIB = [
 {id:'machiv',n:'MACH-IV',en:'Machiavellianism Scale',cat:'dark',s:4,q:'20题',p:2,acc:'paper',cr:'经典公开(Christie & Geis 1970)；原书含题项',cn:'有',note:'马基雅维利主义奠基量表'},
 {id:'pni',n:'PNI',en:'Pathological Narcissism Inventory',cat:'dark',s:4,q:'52题',p:2,acc:'paper',cr:'原论文公开(Pincus等 2009)；学术免费',cn:'有',note:'整合自大型与脆弱型自恋'},
 {id:'aq',n:'Buss-Perry AQ',en:'Aggression Questionnaire',cat:'dark',s:4,q:'29题',p:2,acc:'paper',cr:'原论文公开(Buss & Perry 1992)；学术免费',cn:'有',note:'攻击性标准量表；跨文化验证广泛'},
-{id:'sssv',n:'SSS-V / BSSS',en:'Sensation Seeking Scale',cat:'bio',s:4,q:'SSS-V:40题; BSSS:8题',p:2,acc:'paper',cr:'原论文公开(Zuckerman 1978)；学术免费',cn:'有',note:'感觉寻求经典工具；与生物学关联密切'},
+{id:'sssv',n:'SSS-V / BSSS',en:'Sensation Seeking Scale',cat:'bio',s:4,q:'SSS-V:40题; BSSS:8题',p:2,acc:'paper',cr:'原论文公开(Zuckerman 1978)；学术免费',cn:'有',note:'在线为BSSS-8；SSS-V-40因中文受版权限制暂未上线'},
 {id:'tas20',n:'TAS-20',en:'Toronto Alexithymia Scale-20',cat:'ei',s:4,q:'20题',p:2,acc:'paper',cr:'原论文公开(Bagby等 1994)；学术免费',cn:'有',note:'述情障碍标准工具'},
 {id:'mfq',n:'MFQ',en:'Moral Foundations Questionnaire',cat:'values',s:4,q:'30题',p:2,acc:'open',cr:'免费(moralfoundations.org)；在线可施测',cn:'有',note:'道德基础理论操作化；官网开放'},
 {id:'nfc',n:'NFC',en:'Need for Cognition Scale',cat:'values',s:4,q:'18题',p:2,acc:'paper',cr:'原论文公开(Cacioppo & Petty 1982)；学术免费',cn:'有',note:'认知需求经典量表；说服研究标准变量'},
-{id:'mps',n:'MPS (完美主义)',en:'Multidimensional Perfectionism Scale',cat:'values',s:4,q:'H&F:45题; Frost:35题',p:2,acc:'paper',cr:'原论文公开(两版1990-91)；学术免费',cn:'有',note:'两个互补版本；临床与成就研究标准'},
+{id:'mps',n:'MPS (完美主义)',en:'Multidimensional Perfectionism Scale',cat:'values',s:4,q:'H&F:45题; Frost:35题',p:2,acc:'paper',cr:'原论文公开(两版1990-91)；学术免费',cn:'有',note:'两个互补版本；在线为Frost-35（H&F-45源缺中文，暂未上线）'},
 {id:'grits',n:'Grit-S',en:'Short Grit Scale',cat:'positive',s:4,q:'Grit-S:8题; Grit-O:12题',p:2,acc:'paper',cr:'原论文公开(Duckworth & Quinn 2009)；学术免费',cn:'有',note:'坚毅量表；与尽责性重叠争议'},
 {id:'briefcope',n:'Brief-COPE',en:'Brief COPE',cat:'coping',s:4,q:'28题',p:2,acc:'paper',cr:'原论文公开(Carver 1997)；学术免费',cn:'有',note:'应对策略最常用简版；14策略'},
 {id:'ffmq',n:'FFMQ',en:'Five Facet Mindfulness Questionnaire',cat:'coping',s:4,q:'39题',p:2,acc:'paper',cr:'原论文公开(Baer等 2006)；学术免费',cn:'有',note:'正念特质多维度标准工具'},
@@ -79,7 +79,7 @@ const LIB = [
 {id:'levenson',n:'Levenson IPC',en:'Levenson Multidimensional Locus of Control',cat:'self',s:3,q:'24题',p:3,acc:'paper',cr:'原论文公开(Levenson 1981)',cn:'有',note:'三维度控制源；Rotter的拓展'},
 {id:'scc',n:'SCC',en:'Self-Concept Clarity Scale',cat:'self',s:3,q:'12题',p:3,acc:'paper',cr:'原论文公开(Campbell等 1996)',cn:'可能有',note:'自我概念清晰度'},
 {id:'dsq40',n:'DSQ-40',en:'Defense Style Questionnaire',cat:'coping',s:3,q:'40题',p:3,acc:'paper',cr:'原论文公开(Andrews等 1993)',cn:'有',note:'自陈式防御机制；精神分析操作化'},
-{id:'diamonds',n:'DIAMONDS / S8*',en:'DIAMONDS Situational Taxonomy',cat:'frontier',s:3,q:'S8*:8题; 全版32题',p:3,acc:'paper',cr:'原论文公开(Rauthmann等 2014)',cn:'可能有',note:'情境分类框架；含实际量表S8*'},
+{id:'diamonds',n:'DIAMONDS / S8*',en:'DIAMONDS Situational Taxonomy',cat:'frontier',s:3,q:'在线:24题(8维度); S8*:8题; 全版32题',p:3,acc:'paper',cr:'原论文公开(Rauthmann等 2014)',cn:'可能有',note:'情境分类框架；含实际量表S8*'},
 {id:'5dc',n:'5DC / CEI-II',en:'Five-Dimensional Curiosity',cat:'values',s:3,q:'5DC:25题; CEI-II:10题',p:3,acc:'paper',cr:'原论文公开(Kashdan等 2018/2009)',cn:'可能有',note:'好奇心多维度量表'},
 {id:'asq',n:'ASQ',en:'Attributional Style Questionnaire',cat:'values',s:3,q:'12情境×3评分',p:3,acc:'paper',cr:'原论文公开(Peterson等 1982)',cn:'有',note:'归因风格/习得性无助操作化'},
 {id:'dappbq',n:'DAPP-BQ',en:'Dimensional Assessment of Personality Pathology',cat:'clinical',s:3,q:'290题',p:3,acc:'academic',cr:'学术可用(Livesley & Jackson 1998)',cn:'可能有',note:'人格病理维度；行为遗传学取向'},
@@ -122,10 +122,26 @@ const LIB = [
 {id:'sapa',n:'SAPA项目',en:'Synthetic Aperture Personality Assessment',cat:'frontier',s:3,q:'自适应约100+题',p:5,acc:'na',cr:'开放科学项目(Revelle/Northwestern)；使用IPIP题库',cn:'不适用',note:'IRT自适应测试平台；题库基于IPIP'},
 {id:'digital',n:'数字足迹人格预测',en:'Digital Footprint Personality Prediction',cat:'frontier',s:3,q:'非问卷——行为数据',p:5,acc:'na',cr:'ML方法(Kosinski等 2013+)；非传统量表',cn:'不适用',note:'从社交媒体推断人格；伦理争议大'},
 {id:'openvocab',n:'开放词汇法',en:'Open Vocabulary Approach',cat:'frontier',s:3,q:'非问卷——自由文本',p:5,acc:'na',cr:'NLP方法(Schwartz等 2013)',cn:'不适用',note:'数据驱动语言标记发现'},
-{id:'esm',n:'经验采样法(ESM/EMA)',en:'Experience Sampling Method',cat:'frontier',s:3,q:'每天多次短问卷',p:5,acc:'na',cr:'方法论(Csikszentmihalyi 1977+)',cn:'不适用',note:'测人格状态瞬时变动；方法非量表'}
+{id:'esm',n:'经验采样法(ESM/EMA)',en:'Experience Sampling Method',cat:'frontier',s:3,q:'每天多次短问卷',p:5,acc:'na',cr:'方法论(Csikszentmihalyi 1977+)',cn:'不适用',note:'测人格状态瞬时变动；方法非量表'},
+// —— 版本变体（同一量表的不同题量版本，可独立作答；不计入策展总数）——
+{id:'ipip20',n:'Mini-IPIP（20题）',en:'Mini-IPIP Big-Five',cat:'trait',s:5,q:'20题',p:1,acc:'open',cr:'公共领域(Goldberg)，任何人可自由使用、修改、翻译、再发布',cn:'有',note:'IPIP-50 的20题精简子集（每维度4题）；Donnellan 等 2006',variant:true},
+{id:'bfi2s',n:'BFI-2-S（30题）',en:'Big Five Inventory-2 Short Form',cat:'trait',s:5,q:'30题',p:1,acc:'paper',cr:'免费用于研究(Soto & John)；商用需联系作者',cn:'有',note:'BFI-2 的30题短版（每维度6题、每子维度2题）',variant:true},
+{id:'bfi2xs',n:'BFI-2-XS（15题）',en:'Big Five Inventory-2 Extra-Short Form',cat:'trait',s:5,q:'15题',p:1,acc:'paper',cr:'免费用于研究(Soto & John)；商用需联系作者',cn:'有',note:'BFI-2 的15题极短版（仅测大五维度）',variant:true},
+{id:'npi16',n:'NPI-16（16题）',en:'Narcissistic Personality Inventory-16',cat:'dark',s:5,q:'16题(迫选)',p:1,acc:'paper',cr:'原论文公开(Raskin & Hall 1979)；学术免费',cn:'有',note:'NPI-40 的16题单维精简版；迫选格式',variant:true},
+{id:'narqs',n:'NARQ-S（6题）',en:'NARQ Short Form',cat:'dark',s:3,q:'6题',p:3,acc:'paper',cr:'原论文公开(Back等 2013)',cn:'有',note:'NARQ 的6题短版（钦佩/竞争各3题）',variant:true},
+{id:'grito',n:'Grit-O（原始12题）',en:'Original Grit Scale',cat:'positive',s:4,q:'12题',p:2,acc:'paper',cr:'原论文公开(Duckworth & Quinn 2009)；学术免费',cn:'有',note:'坚毅量表原始12题；Grit-S 为其8题精简版',variant:true},
+{id:'ceiII',n:'CEI-II（10题）',en:'Curiosity and Exploration Inventory-II',cat:'values',s:3,q:'10题',p:3,acc:'paper',cr:'原论文公开(Kashdan等 2018/2009)',cn:'可能有',note:'好奇与探索量表(拓展/接纳)；与5DC同源但为独立10题工具',variant:true},
+{id:'pvq40',n:'PVQ-40（40题）',en:'Portrait Values Questionnaire (PVQ-40)',cat:'values',s:5,q:'40题',p:1,acc:'academic',cr:'学术免费(Schwartz)；需联系作者获取最新PVQ-RR',cn:'有',note:'Schwartz十大价值观40题肖像式问卷；在线svs为PVQ-21版',variant:true},
+{id:'hfmps',n:'HF-MPS（H&F 45题·英文版）',en:'Hewitt & Flett MPS (45)',cat:'values',s:4,q:'45题(英文)',p:2,acc:'paper',cr:'原论文公开(两版1990-91)；学术免费',cn:'暂缺(英文原版)',note:'Hewitt & Flett 完美主义45题（SOP/OOP/SPP）；英文原版上线，源文件无中文；线上 mps 为 Frost-35',variant:true},
+{id:'sssv40',n:'SSS-V（第五版40题·英文迫选版）',en:'Sensation Seeking Scale Form V (40)',cat:'bio',s:4,q:'40题(迫选·英文)',p:2,acc:'paper',cr:'原论文公开(Zuckerman 1978)；学术免费',cn:'暂缺(版权限制)',note:'感觉寻求第五版40题迫选；英文原版上线，中文条目受版权限制；线上 sssv 为 BSSS-8',variant:true},
+{id:'pwb42',n:'PWB-42（42题·英文版）',en:'Ryff PWB Scales (42)',cat:'positive',s:4,q:'42题(英文)',p:2,acc:'academic',cr:'学术可用(Ryff)；多个长度版本',cn:'暂缺(英文原版)',note:'Ryff 心理幸福感42题（六维各7题）；英文原版上线，源此版仅英文；线上 pwb 为18题版',variant:true}
 ];
 
 const STATUS = {
+hfmps:'full',sssv40:'full',pwb42:'full',
+
+ipip20:'full',bfi2s:'full',bfi2xs:'full',npi16:'full',narqs:'full',grito:'full',ceiII:'full',pvq40:'full',
+
 ipip:'full',bfi2:'full',rses:'full',ecr:'full',npi:'full',rotter:'full',svs:'full',
 hexaco:'full',pid5:'full',bisbas:'full',gse:'full',sd3:'full',machiv:'full',pni:'full',
 aq:'full',sssv:'full',mfq:'full',nfc:'full',mps:'full',grits:'full',briefcope:'full',
@@ -148,6 +164,19 @@ sapa:'framework',digital:'framework',openvocab:'framework',esm:'framework'
 };
 
 const SOURCES = {
+hfmps:['Scholar','https://scholar.google.com/scholar?q=hewitt+flett+1991+%22multidimensional+perfectionism+scale%22'],
+sssv40:['Scholar','https://scholar.google.com/scholar?q=zuckerman+1994+%22behavioral+expressions+and+biosocial+bases+of+sensation+seeking%22'],
+pwb42:['DOI: JPSP','https://doi.org/10.1037/0022-3514.57.6.1069'],
+
+ipip20:['IPIP 官网','https://ipip.ori.org'],
+bfi2s:['DOI: JPSP','https://doi.org/10.1037/pspp0000096'],
+bfi2xs:['DOI: JPSP','https://doi.org/10.1037/pspp0000096'],
+npi16:['DOI: JPSP','https://doi.org/10.1037/0022-3514.54.5.890'],
+narqs:['DOI: Psychol Assess','https://doi.org/10.1037/a0028872'],
+grito:['Scholar','https://scholar.google.com/scholar?q=duckworth+quinn+2009+%22short+grit+scale%22'],
+ceiII:['Scholar','https://scholar.google.com/scholar?q=kashdan+2018+%22five-dimensional+curiosity%22'],
+pvq40:['Scholar','https://scholar.google.com/scholar?q=schwartz+1992+%22universals+in+the+content+and+structure+of+values%22'],
+
 ipip:['IPIP 官网','https://ipip.ori.org'],
 bfi2:['DOI: JPSP','https://doi.org/10.1037/pspp0000096'],
 rses:['Scholar','https://scholar.google.com/scholar?q=%22society+and+the+adolescent+self-image%22+rosenberg+1965'],
@@ -249,4 +278,4 @@ esm:['Scholar','https://scholar.google.com/scholar?q=csikszentmihalyi+%22experie
 };
 
 // 可在线作答的量表 id（有完整双语结构化题库，见 scales.js）；按收集表优先级排序
-const FILLABLE = ['ipip','bfi2','rses','ecr','npi','via','rotter','svs','hexaco','bisbas','gse','sd3','machiv','pni','aq','sssv','mfq','nfc','mps','grits','briefcope','ffmq','maas','pwb','bpns','wcq','dirtydozen','narq','brs','perma','rq','rstpq','hsp','ds14','levenson','scc','dsq40','diamonds','5dc','ibqr','cbq','eatqr','eas'];
+const FILLABLE = ['ipip','ipip20','bfi2','bfi2s','bfi2xs','rses','ecr','npi','npi16','via','rotter','svs','pvq40','hexaco','bisbas','gse','sd3','machiv','pni','aq','sssv','sssv40','mfq','nfc','mps','hfmps','grits','grito','briefcope','ffmq','maas','pwb','pwb42','bpns','wcq','dirtydozen','narq','narqs','brs','perma','rq','rstpq','hsp','ds14','levenson','scc','dsq40','diamonds','5dc','ceiII','ibqr','cbq','eatqr','eas'];
