@@ -249,4 +249,4 @@ esm:['Scholar','https://scholar.google.com/scholar?q=csikszentmihalyi+%22experie
 };
 
 // 可在线作答的量表 id（有完整双语结构化题库，见 scales.js）；按收集表优先级排序
-const FILLABLE = ['ipip','bfi2','rses','ecr','npi','via','rotter','svs','gse','ds14','scc','brs'];
+const FILLABLE = ['ipip','bfi2','rses','ecr','npi','via','rotter','svs','hexaco','bisbas','gse','sd3','machiv','pni','aq','sssv','mfq','nfc','mps','grits','briefcope','ffmq','maas','pwb','bpns','wcq','dirtydozen','narq','brs','perma','rq','rstpq','hsp','ds14','levenson','scc','dsq40','diamonds','5dc','ibqr','cbq','eatqr','eas'];
