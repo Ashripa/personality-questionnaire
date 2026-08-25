@@ -86,12 +86,10 @@ Questionnaire/
 
 ### ⚠️ 三个关键 gotcha
 
-1. **Netlify 未连 Git 仓库**（`repo_url: None`）——是手动 CLI 部署起家。**push 到 GitHub 不会触发 Netlify 构建**。改代码后必须手动部署：
-   ```bash
-   cd Questionnaire
-   netlify deploy --prod --dir=site --site=30238098-4430-46d2-bfb5-7ac1239e982e
-   ```
-   （若要改成自动：Netlify 面板 Site → Build & deploy → Link repository，选该仓库、分支 main、**发布目录填 `site`**，需走一次 GitHub OAuth。）
+1. **已改为 GitHub Actions 自动部署**（2026-08-25 起）。Netlify 本身仍未连 Git，改用 CI：`.github/workflows/deploy.yml` 在 push `main`（且改动含 `site/**` 或该 workflow）时跑 `netlify deploy --prod --dir=site`。**所以现在 push 到 main 即自动上线**，无需手动部署。
+   - 依赖两个 GitHub Secret（已设在仓库）：`NETLIFY_AUTH_TOKEN`（取自本机 netlify 登录 token）、`NETLIFY_SITE_ID`（= 30238098-...982e）。
+   - workflow YAML 坑：`run:` 单行命令里别出现"冒号+空格"（如 `--message "CI deploy: xxx"`），会被 YAML 当成 mapping 报错、0s 失败；已去掉冒号。
+   - 手动兜底（仍可用）：`netlify deploy --prod --dir=site --site=30238098-4430-46d2-bfb5-7ac1239e982e`；或 Actions 页 `workflow_dispatch` 手动触发。
 2. **git 走代理**：本机走 `http://127.0.0.1:7890` 代理，但 git 默认不继承，会报 `TLS connect error`。已给该仓库设了本地 `http.proxy`。若换机/换仓库遇到同样报错：
    ```bash
    git config http.proxy http://127.0.0.1:7890
