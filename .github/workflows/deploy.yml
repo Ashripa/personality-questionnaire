@@ -1,0 +1,26 @@
+name: Deploy to Netlify
+
+# push 到 main 且改动涉及站点/工作流时，自动部署 site/ 到 Netlify 生产环境
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch: {}   # 也可在 Actions 页手动触发
+
+concurrency:
+  group: netlify-prod
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy site/ to Netlify (production)
+        run: npx --yes netlify-cli@27 deploy --prod --dir=site --message "CI deploy: ${{ github.sha }}"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

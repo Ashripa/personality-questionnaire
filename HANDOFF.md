@@ -108,10 +108,11 @@ Questionnaire/
 ## 7. 已知待办 / 下一步
 
 - **HF 风格改造**（进行中，参考用户提供的 HF 主页 DOM 校正）：
-  - 主页 hero 深色圆角面板已做；剩余可选：真实 view.html 截图做 desktop/tablet/mobile 三张 WebP 响应式预览（**不要用 iframe，不要抄 HF 资产**）。
+  - 主页 hero 已从"深色面板 + 应用窗口 mock"改为 **cult-ui `hero-static-radial-gradient` 风格**：深色面板 + 纯 CSS 径向 mesh 渐变视觉块（`.hero-visual`，蓝#006cff/青#00d2ff/紫#7c3aed）+ 环境辉光 `.hero-glow` + 徽章行 `.hero-badges`。原 `.mockw*` CSS 已移除。（cult-ui 原组件是 WebGL shader React 组件，静态站无法直接用，按视觉复刻。）
+  - 剩余可选：真实 view.html 截图做 desktop/tablet/mobile 三张 WebP 响应式预览（**不要用 iframe，不要抄 HF 资产**）。
   - 三列"发现区"信息密度、紧凑资源行（~60px 高、hover 靛蓝/暗色黄）。
   - view.html / fill.html 详情页、筛选、`:focus-visible` 焦点环统一。
-- **字体**：已做渲染层优化（`font-synthesis:none` 关 faux bold、CJK 回退栈、抗锯齿、kerning、行高 1.65）。**可选**：加中文 webfont（Noto Sans SC / 思源黑体）求跨系统一致，代价是体积。
+- **字体**：已做渲染层优化（`font-synthesis:none` 关 faux bold、CJK 回退栈、抗锯齿、kerning、行高 1.65）。**已加中文 webfont**：4 页 `<head>` 通过 Google Fonts 加载 `Noto Sans SC:wght@400;500;700;900`，`--sans` 现为 `"Source Sans 3","Noto Sans SC",...`（拉丁走 Source Sans 3，中文走 Noto Sans SC）。此前"字体干干的"根因是中文无 webfont、回退到系统黑体（Win=微软雅黑），非 Netlify 未同步。
 - **无障碍**：搜索框加 `aria-label`、活动导航加 `aria-current`、移动端触控目标 ≥44px。
 
 ## 8. 用户偏好（跨会话通用）

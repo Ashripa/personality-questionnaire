@@ -13,7 +13,7 @@
   --shadow-sm:0 1px 2px rgba(16,22,26,.04);
   --shadow:0 1px 3px rgba(16,22,26,.06),0 6px 20px rgba(16,22,26,.05);
   --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
-  --sans:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei UI","Microsoft YaHei","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  --sans:"Source Sans 3","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei UI","Microsoft YaHei","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
   --serif:"Source Serif 4",Georgia,"Songti SC",serif;
   --r:8px; --r-lg:12px;
   /* status */
@@ -310,11 +310,20 @@ a:hover{text-decoration:underline}
   outline:2.5px solid var(--accent);outline-offset:2px;border-radius:6px}
 .tag-fill{background:var(--fill-bg);color:var(--fill)}
 
-/* hero dark panel */
+/* hero dark panel — cult-ui static radial gradient */
 .hero{padding:16px 0 0;border:none}
-.hero-panel{background:var(--hero-bg);border-radius:25px;overflow:hidden;color:var(--hero-ink);
-  display:grid;grid-template-columns:47% 53%;align-items:center;gap:36px;padding:72px 80px;min-height:600px}
-.hero-l{max-width:512px}
+.hero-panel{position:relative;isolation:isolate;background:var(--hero-bg);border-radius:25px;overflow:hidden;
+  color:var(--hero-ink);display:grid;grid-template-columns:52% 48%;align-items:center;gap:36px;
+  padding:72px 80px;min-height:600px;
+  background-image:
+    radial-gradient(120% 90% at 82% 8%, rgba(0,108,255,.28), transparent 55%),
+    radial-gradient(110% 80% at 100% 100%, rgba(124,58,237,.30), transparent 60%),
+    radial-gradient(90% 70% at 10% 100%, rgba(79,70,229,.22), transparent 60%)}
+/* soft grain/vignette so the gradient reads clean */
+.hero-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(140% 120% at 50% -10%, transparent 55%, rgba(0,0,0,.35))}
+.hero-l{position:relative;z-index:1;max-width:512px}
+.hero-r{position:relative;z-index:1}
 .hero-brand{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:13.5px;color:#fff;
   background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);padding:5px 13px 5px 7px;border-radius:20px}
 .hero-brand .hb-logo{width:22px;height:22px;border-radius:6px;background:var(--accent);display:grid;place-items:center}
@@ -328,26 +337,32 @@ a:hover{text-decoration:underline}
 .btn-hero svg{width:16px;height:16px}
 .hero-link{color:#dfe3ee;font-weight:600;font-size:15px;border-bottom:1px solid var(--hero-line);padding-bottom:2px}
 .hero-link:hover{color:#fff;border-color:#fff;text-decoration:none}
-.hero-r{display:flex;justify-content:center;align-items:center}
 
-/* app-window mock */
-.mockw{width:100%;max-width:560px;background:var(--surface);border-radius:12px;overflow:hidden;color:var(--ink);
-  box-shadow:0 24px 60px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08)}
-.mockw-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--bg-soft);border-bottom:1px solid var(--border)}
-.mockw-bar .d{width:10px;height:10px;border-radius:50%}
-.mockw-url{margin-left:10px;font-family:var(--mono);font-size:11px;color:var(--faint);
-  background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 10px}
-.mockw-body{display:grid;grid-template-columns:132px 1fr}
-.mockw-side{border-right:1px solid var(--border);padding:14px 12px;background:var(--surface-2)}
-.mockw-side .fh{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin-bottom:8px}
-.mockw-side .fi{font-size:12px;color:var(--muted);padding:3.5px 0;display:flex;align-items:center;gap:6px}
-.mockw-side .fi.on{color:var(--accent-ink);font-weight:600}
-.mockw-main{padding:12px}
-.mockw-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--border);
-  border-radius:8px;margin-bottom:8px;background:var(--surface)}
-.mockw-row .mnm{font-size:12.5px;font-weight:600}
-.mockw-row .mid{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
-.mockw-row .mtag{margin-left:auto;font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:4px}
+/* badges row */
+.hero-badges{margin-top:34px;display:flex;flex-wrap:wrap;gap:10px}
+.hbadge{display:inline-flex;align-items:baseline;gap:6px;font-size:13px;color:var(--hero-muted);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  padding:6px 13px;border-radius:20px;backdrop-filter:blur(4px)}
+.hbadge b{color:#fff;font-weight:700;font-family:var(--mono);letter-spacing:-.01em}
+
+/* static radial gradient visual (pure-CSS mesh, cult-ui style) */
+.hero-r{display:flex;justify-content:center;align-items:center}
+.hero-visual{position:relative;width:100%;max-width:440px;aspect-ratio:1/1;border-radius:32px;overflow:hidden;
+  background-color:#05070f;
+  background-image:
+    radial-gradient(circle at 28% 24%, #00d2ff 0%, transparent 42%),
+    radial-gradient(circle at 78% 20%, #006cff 0%, transparent 48%),
+    radial-gradient(circle at 80% 74%, #7c3aed 0%, transparent 50%),
+    radial-gradient(circle at 22% 82%, #4f46e5 0%, transparent 46%),
+    radial-gradient(circle at 52% 52%, #6366f1 0%, transparent 60%);
+  box-shadow:0 40px 120px -20px rgba(79,70,229,.55),
+    inset 0 0 0 1px rgba(255,255,255,.08),inset 0 2px 40px rgba(255,255,255,.06)}
+.hero-visual::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.20), transparent 45%);
+  mix-blend-mode:screen}
+.hv-ring{position:absolute;inset:14%;border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:inset 0 0 60px rgba(255,255,255,.10)}
 
 /* thin stats strip */
 .statstrip{display:flex;gap:30px;flex-wrap:wrap;padding:24px 0 2px;align-items:baseline}
@@ -377,6 +392,7 @@ a:hover{text-decoration:underline}
   .hero-l{max-width:none}
   .hero-panel h1{font-size:32px}.hero-panel .lede{font-size:15.5px;margin-left:auto;margin-right:auto}
   .hero-cta{justify-content:center}.hero-brand{margin:0 auto}
-  .hero-r{order:2}.mockw{max-width:440px}
+  .hero-badges{justify-content:center}
+  .hero-r{order:2}.hero-visual{max-width:320px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
